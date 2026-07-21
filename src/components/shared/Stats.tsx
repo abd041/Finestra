@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Stat } from "@/content/types";
-import { Reveal } from "./Reveal";
+import { FadeIn } from "@/components/motion/FadeIn";
+import { offset } from "@/components/motion/tokens";
 
 type Props = {
   eyebrow: string;
@@ -54,11 +55,11 @@ export function Stats({ eyebrow, title, stats }: Props) {
     }
 
     const zeroId = requestAnimationFrame(() => setCounts(targets.map(() => 0)));
-    const duration = 1600;
+    const durationMs = 1600;
     const start = performance.now();
     let raf = 0;
     const tick = (now: number) => {
-      const progress = Math.min(1, (now - start) / duration);
+      const progress = Math.min(1, (now - start) / durationMs);
       const eased = 1 - Math.pow(1 - progress, 3);
       setCounts(targets.map((t) => Math.round(t * eased)));
       if (progress < 1) raf = requestAnimationFrame(tick);
@@ -82,9 +83,10 @@ export function Stats({ eyebrow, title, stats }: Props) {
           aria-hidden="true"
         />
 
-        <Reveal>
+        {/* Wrapper only — counters stay one-shot via animatedRef */}
+        <FadeIn distance={offset.sm}>
           <div className="section-head max-w-3xl">
-            <p className="eyebrow eyebrow-caps !mb-4 !text-white/55">{eyebrow}</p>
+            <p className="eyebrow eyebrow-caps !mb-4 !text-white/70">{eyebrow}</p>
             <h2
               id="stats-title"
               className="max-w-[16ch] text-[clamp(2.2rem,4.4vw,3.75rem)] leading-[1.02] tracking-[-0.04em] text-white"
@@ -92,14 +94,13 @@ export function Stats({ eyebrow, title, stats }: Props) {
               {title}
             </h2>
           </div>
-        </Reveal>
 
-        <div className="grid gap-8 border-t border-white/10 pt-10 sm:grid-cols-3 sm:gap-0 sm:pt-12">
-          {stats.map((stat, i) => {
-            const { suffix } = parseStat(stat.value);
-            return (
-              <Reveal key={stat.label} delay={i * 90}>
+          <div className="mt-10 grid gap-8 border-t border-white/10 pt-10 sm:grid-cols-3 sm:gap-0 sm:pt-12 md:mt-12">
+            {stats.map((stat, i) => {
+              const { suffix } = parseStat(stat.value);
+              return (
                 <div
+                  key={stat.label}
                   className={`relative text-center sm:px-8 lg:px-12 ${
                     i > 0 ? "sm:border-l sm:border-white/10" : ""
                   }`}
@@ -117,14 +118,14 @@ export function Stats({ eyebrow, title, stats }: Props) {
                     className="stat-rule mx-auto mt-5 h-px w-10 bg-white/25 sm:mx-auto"
                     aria-hidden="true"
                   />
-                  <p className="mt-5 text-[0.8rem] font-medium uppercase tracking-[0.16em] text-white/55">
+                  <p className="mt-5 text-[0.8rem] font-medium uppercase tracking-[0.16em] text-white/70">
                     {stat.label}
                   </p>
                 </div>
-              </Reveal>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </FadeIn>
       </div>
     </section>
   );

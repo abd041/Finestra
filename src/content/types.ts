@@ -57,6 +57,16 @@ export type Dictionary = {
     siteName: string;
     defaultTitle: string;
     defaultDescription: string;
+    servicesTitle: string;
+    servicesDescription: string;
+    projectsTitle: string;
+    projectsDescription: string;
+    aboutTitle: string;
+    aboutDescription: string;
+    contactTitle: string;
+    contactDescription: string;
+    privacyTitle: string;
+    privacyDescription: string;
   };
   nav: {
     home: string;

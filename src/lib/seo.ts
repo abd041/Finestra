@@ -35,6 +35,7 @@ export function buildPageMetadata({
     openGraph: {
       type: "website",
       locale: locale === "nl" ? "nl_NL" : "en_GB",
+      alternateLocale: locale === "nl" ? ["en_GB"] : ["nl_NL"],
       url,
       siteName: siteConfig.name,
       title: fullTitle,
@@ -65,14 +66,34 @@ export function organizationJsonLd(description: string, locale: Locale) {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": `${siteConfig.url}/#organization`,
     name: siteConfig.name,
     url: siteConfig.url,
     email: siteConfig.email,
-    ...(siteConfig.hasPhone ? { telephone: siteConfig.phoneHref.replace("tel:", "") } : {}),
+    ...(siteConfig.hasPhone
+      ? { telephone: siteConfig.phoneHref.replace("tel:", "") }
+      : {}),
     description,
     areaServed: "Worldwide",
     image: `${siteConfig.url}${media.og}`,
+    logo: `${siteConfig.url}${media.og}`,
     inLanguage: locale === "nl" ? "nl-NL" : "en-GB",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: siteConfig.addressLine1,
+      addressLocality: "Huijbergen",
+      postalCode: "4635 SB",
+      addressCountry: "NL",
+    },
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer service",
+      email: siteConfig.email,
+      ...(siteConfig.hasPhone
+        ? { telephone: siteConfig.phoneHref.replace("tel:", "") }
+        : {}),
+      availableLanguage: ["nl", "en"],
+    },
   };
 }
 

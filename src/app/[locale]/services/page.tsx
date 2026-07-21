@@ -47,8 +47,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const dict = getDictionary(raw);
   return buildPageMetadata({
     locale: raw,
-    title: dict.nav.services,
-    description: dict.servicesPage.subtitle,
+    title: dict.meta.servicesTitle,
+    description: dict.meta.servicesDescription,
     path: "/services",
   });
 }

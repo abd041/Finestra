@@ -6,6 +6,21 @@ export const nl: Dictionary = {
     defaultTitle: "Krasvrij glas zonder vervanging",
     defaultDescription:
       "Specialist in glaspolijsten, slijpen, beschermfolie en coating voor superyachten en commercieel glas — wereldwijd op locatie.",
+    servicesTitle: "Glaspolijsten, slijpen, folie & coating",
+    servicesDescription:
+      "Optisch polijsten, gecontroleerd slijpen, beschermfolie en coating voor jacht- en architecturaal glas — hersteld op locatie.",
+    projectsTitle: "Projecten & galerij gerestaureerd glas",
+    projectsDescription:
+      "Voor-en-na resultaten en projectfotografie van jacht- en commercieel glasherstel door Finestra International.",
+    aboutTitle: "Over Patrick Smid & Finestra",
+    aboutDescription:
+      "Maak kennis met Patrick Smid en het vakmanschap achter Finestra International — specialist in glasrestauratie voor jachten en premium objecten wereldwijd.",
+    contactTitle: "Vraag een offerte voor glasherstel",
+    contactDescription:
+      "Neem contact op met Finestra International voor polijsten, slijpen, folie of coating. Gevestigd in Huijbergen — werkzaam wereldwijd.",
+    privacyTitle: "Privacybeleid",
+    privacyDescription:
+      "Hoe Finestra International persoonsgegevens uit aanvragen en websitegebruik verzamelt, gebruikt en beschermt.",
   },
   nav: {
     home: "Home",

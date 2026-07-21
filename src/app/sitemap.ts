@@ -18,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
           languages: {
             nl: `${siteConfig.url}/nl${path}`,
             en: `${siteConfig.url}/en${path}`,
+            "x-default": `${siteConfig.url}/nl${path}`,
           },
         },
       });

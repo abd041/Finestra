@@ -6,7 +6,8 @@ import { FeatureRow } from "@/components/home/ServiceGrid";
 import { CTABanner } from "@/components/shared/CTABanner";
 import { JsonLd } from "@/components/shared/JsonLd";
 import { PageBanner } from "@/components/shared/PageBanner";
-import { Reveal } from "@/components/shared/Reveal";
+import { FadeIn } from "@/components/motion/FadeIn";
+import { duration, offset } from "@/components/motion/tokens";
 import { Stats } from "@/components/shared/Stats";
 import { Testimonials } from "@/components/shared/Testimonials";
 import { getDictionary, isLocale, type Locale } from "@/content";
@@ -24,8 +25,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const dict = getDictionary(raw);
   return buildPageMetadata({
     locale: raw,
-    title: dict.nav.about,
-    description: dict.aboutPage.subtitle,
+    title: dict.meta.aboutTitle,
+    description: dict.meta.aboutDescription,
     path: "/about",
   });
 }
@@ -73,13 +74,13 @@ export default async function AboutPage({ params }: Props) {
       {/* Single Patrick spotlight (replaces Bluewake multi-person team grid) */}
       <section className="section surface-sand">
         <div className="container">
-          <Reveal>
+          <FadeIn distance={offset.sm}>
             <div className="section-head max-w-2xl">
               <h2 className="text-[clamp(2.1rem,4vw,3.4rem)] text-ink">{a.spotlightTitle}</h2>
               <p className="mt-5 text-muted-foreground md:text-lg">{a.spotlightBody}</p>
             </div>
-          </Reveal>
-          <Reveal delay={80}>
+          </FadeIn>
+          <FadeIn direction="scale" durationSec={duration.medium} className="mt-10 md:mt-12">
             <div className="grid overflow-hidden rounded-[var(--radius-panel)] bg-white shadow-[var(--shadow-md)] lg:grid-cols-[1.1fr_0.9fr]">
               <div className="media-frame relative min-h-[360px] aspect-[4/5] lg:aspect-auto lg:min-h-[520px]">
                 <Image
@@ -99,7 +100,7 @@ export default async function AboutPage({ params }: Props) {
                 </blockquote>
               </div>
             </div>
-          </Reveal>
+          </FadeIn>
         </div>
       </section>
 
@@ -116,7 +117,6 @@ export default async function AboutPage({ params }: Props) {
         body={dict.home.testimonialsBody}
         items={dict.testimonials}
         groupLabel={dict.a11y.testimonials}
-        showLabel={dict.a11y.showTestimonial}
       />
 
       <CTABanner

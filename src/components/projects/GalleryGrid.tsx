@@ -3,7 +3,11 @@
 import Image from "next/image";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import type { GalleryItem } from "@/content/types";
-import { Reveal } from "@/components/shared/Reveal";
+import { FadeIn } from "@/components/motion/FadeIn";
+import { FadeInItem } from "@/components/motion/FadeInItem";
+import { Stagger } from "@/components/motion/Stagger";
+import { duration, offset, staggerDelay } from "@/components/motion/tokens";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -14,6 +18,7 @@ type Props = {
   closeLabel?: string;
   prevLabel?: string;
   nextLabel?: string;
+  limit?: number;
 };
 
 /**
@@ -43,6 +48,7 @@ export function GalleryGrid({
   closeLabel = "Close",
   prevLabel = "Previous image",
   nextLabel = "Next image",
+  limit,
 }: Props) {
   const [active, setActive] = useState<number | null>(null);
   const [visible, setVisible] = useState(false);
@@ -52,7 +58,8 @@ export function GalleryGrid({
   const dialogRef = useRef<HTMLDivElement>(null);
   const lastFocusRef = useRef<HTMLElement | null>(null);
 
-  const activeItem = active !== null ? items[active] : null;
+  const list = limit ? items.slice(0, limit) : items;
+  const activeItem = active !== null ? list[active] : null;
 
   const close = useCallback(() => {
     setVisible(false);
@@ -66,10 +73,10 @@ export function GalleryGrid({
     (delta: number) => {
       setActive((i) => {
         if (i === null) return 0;
-        return (i + delta + items.length) % items.length;
+        return (i + delta + list.length) % list.length;
       });
     },
-    [items.length]
+    [list.length]
   );
 
   const openAt = useCallback((index: number) => {
@@ -117,7 +124,7 @@ export function GalleryGrid({
     <section className="bg-white py-20 md:py-28" aria-labelledby={headingId}>
       <div className="container">
         <div className="mb-12 grid gap-6 md:mb-16 md:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] md:items-end md:gap-16 lg:mb-20 lg:gap-24">
-          <Reveal variant="left">
+          <FadeIn direction="left" distance={offset.lateral}>
             <div>
               {eyebrow && (
                 <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[#111]">
@@ -133,42 +140,52 @@ export function GalleryGrid({
                 </h2>
               )}
             </div>
-          </Reveal>
+          </FadeIn>
           {body && (
-            <Reveal delay={90} variant="right">
+            <FadeIn direction="right" distance={offset.lateral}>
               <p className="max-w-sm text-[0.98rem] leading-[1.7] text-[#6b7280] md:justify-self-end md:text-right">
                 {body}
               </p>
-            </Reveal>
+            </FadeIn>
           )}
         </div>
 
-        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-3 md:grid-cols-4 md:gap-3 lg:gap-3.5">
-          {items.map((galleryItem, i) => {
+        {/* once: true — long mosaics fatigue if every tile re-staggers on scroll-up */}
+        <Stagger
+          className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-4 md:gap-2.5"
+          stagger={staggerDelay.tight}
+          once
+        >
+          {list.map((galleryItem, i) => {
             const span = spans[i % spans.length];
             const isWide = span.includes("col-span-2");
 
             return (
-              <Reveal
+              <FadeInItem
                 key={galleryItem.id}
-                delay={(i % 6) * 40}
-                className={cn(span)}
+                className={cn(
+                  "relative h-[400px] w-full min-h-[400px]",
+                  span
+                )}
+                distance={offset.sm}
+                durationSec={duration.fast}
               >
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
                   onClick={() => openAt(i)}
                   aria-label={`${galleryItem.title} — ${galleryItem.category}`}
                   className={cn(
-                    "group relative block w-full overflow-hidden rounded-none bg-[#0b1520] text-left",
-                    "h-[240px] sm:h-[260px] md:h-[300px] lg:h-[340px]",
-                    "cursor-zoom-in focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#111]"
+                    "group absolute inset-0 h-auto min-h-0 w-full overflow-hidden rounded-[8px] bg-[#0b1520] p-0 text-left shadow-none",
+                    "cursor-zoom-in hover:bg-[#0b1520] focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#111]",
+                    "active:translate-y-0"
                   )}
                 >
                   <Image
                     src={galleryItem.image}
                     alt={galleryItem.title}
                     fill
-                    className="object-cover transition-transform duration-[1.1s] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform group-hover:scale-[1.05] group-focus-visible:scale-[1.05]"
+                    className="object-cover motion-safe:transition-transform motion-safe:duration-[1.1s] motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-safe:group-hover:scale-[1.05] motion-safe:group-focus-visible:scale-[1.05]"
                     sizes={
                       isWide
                         ? "(max-width:768px) 100vw, 50vw"
@@ -179,11 +196,11 @@ export function GalleryGrid({
                     className="pointer-events-none absolute inset-0 bg-transparent transition-colors duration-400 group-hover:bg-[#070d14]/10 group-focus-visible:bg-[#070d14]/10"
                     aria-hidden="true"
                   />
-                </button>
-              </Reveal>
+                </Button>
+              </FadeInItem>
             );
           })}
-        </div>
+        </Stagger>
       </div>
 
       {activeItem && (
@@ -198,37 +215,42 @@ export function GalleryGrid({
           aria-labelledby={titleId}
           onClick={close}
         >
-          <button
+          <Button
             ref={closeRef}
             type="button"
-            className="absolute right-4 top-4 z-20 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20 md:right-8 md:top-8"
+            variant="ghost"
+            className="absolute right-3 top-3 z-20 h-auto rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-none hover:bg-white/20 hover:text-white sm:right-4 sm:top-4 md:right-8 md:top-8"
             onClick={close}
           >
             {closeLabel}
-          </button>
+          </Button>
 
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="icon"
             aria-label={prevLabel}
-            className="absolute left-3 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition hover:bg-white/20 md:left-8 md:h-14 md:w-14"
+            className="absolute left-3 top-1/2 z-20 hidden h-12 w-12 -translate-y-1/2 rounded-full border border-white/20 bg-white/10 text-white shadow-none hover:bg-white/20 hover:text-white sm:flex md:left-8 md:h-14 md:w-14"
             onClick={(e) => {
               e.stopPropagation();
               go(-1);
             }}
           >
             <span aria-hidden="true">←</span>
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
+            variant="ghost"
+            size="icon"
             aria-label={nextLabel}
-            className="absolute right-3 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition hover:bg-white/20 md:right-8 md:h-14 md:w-14"
+            className="absolute right-3 top-1/2 z-20 hidden h-12 w-12 -translate-y-1/2 rounded-full border border-white/20 bg-white/10 text-white shadow-none hover:bg-white/20 hover:text-white sm:flex md:right-8 md:h-14 md:w-14"
             onClick={(e) => {
               e.stopPropagation();
               go(1);
             }}
           >
             <span aria-hidden="true">→</span>
-          </button>
+          </Button>
 
           <div
             className="relative w-full max-w-5xl overflow-hidden bg-transparent"
@@ -240,26 +262,64 @@ export function GalleryGrid({
                 src={activeItem.image}
                 alt={activeItem.title}
                 fill
-                className="object-cover"
+                className="object-cover motion-safe:transition-opacity"
                 sizes="(max-width:1024px) 100vw, 90vw"
                 priority
               />
             </div>
-            <div className="mt-5 flex items-end justify-between gap-6 px-1 text-white">
-              <div>
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/50">
+            <div className="mt-4 flex flex-col gap-3 px-1 text-white sm:mt-5 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
+              <div className="min-w-0">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/75">
                   {activeItem.category}
                 </p>
                 <h3
                   id={titleId}
-                  className="mt-2 font-display text-[clamp(1.35rem,2.5vw,1.85rem)] leading-tight tracking-[-0.03em]"
+                  className="mt-2 font-display text-[clamp(1.2rem,2.5vw,1.85rem)] leading-tight tracking-[-0.03em]"
                 >
                   {activeItem.title}
                 </h3>
+                <p className="sr-only" aria-live="polite">
+                  {active !== null
+                    ? `${active + 1} / ${list.length}`
+                    : ""}
+                </p>
               </div>
-              <p className="shrink-0 pb-1 text-sm text-white/45">
+              <div className="flex shrink-0 items-center gap-3 sm:hidden">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={prevLabel}
+                  className="h-11 w-11 rounded-full border border-white/20 bg-white/10 text-white shadow-none hover:bg-white/20 hover:text-white"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    go(-1);
+                  }}
+                >
+                  <span aria-hidden="true">←</span>
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={nextLabel}
+                  className="h-11 w-11 rounded-full border border-white/20 bg-white/10 text-white shadow-none hover:bg-white/20 hover:text-white"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    go(1);
+                  }}
+                >
+                  <span aria-hidden="true">→</span>
+                </Button>
+                <p className="text-sm text-white/80">
+                  {active !== null
+                    ? `${String(active + 1).padStart(2, "0")} / ${String(list.length).padStart(2, "0")}`
+                    : null}
+                </p>
+              </div>
+              <p className="hidden shrink-0 pb-1 text-sm text-white/80 sm:block">
                 {active !== null
-                  ? `${String(active + 1).padStart(2, "0")} / ${String(items.length).padStart(2, "0")}`
+                  ? `${String(active + 1).padStart(2, "0")} / ${String(list.length).padStart(2, "0")}`
                   : null}
               </p>
             </div>

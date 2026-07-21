@@ -1,7 +1,8 @@
 "use client";
 
 import type { FaqItem } from "@/content/types";
-import { Reveal } from "./Reveal";
+import { FadeIn } from "@/components/motion/FadeIn";
+import { offset } from "@/components/motion/tokens";
 import {
   Accordion,
   AccordionContent,
@@ -19,7 +20,7 @@ export function FAQAccordion({ eyebrow, title, items }: Props) {
   return (
     <section className="section" aria-labelledby="faq-title">
       <div className="container grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
-        <Reveal variant="left">
+        <FadeIn direction="left" distance={offset.lateral}>
           <p className="eyebrow">{eyebrow}</p>
           <h2
             id="faq-title"
@@ -27,8 +28,8 @@ export function FAQAccordion({ eyebrow, title, items }: Props) {
           >
             {title}
           </h2>
-        </Reveal>
-        <Reveal variant="right" delay={100}>
+        </FadeIn>
+        <FadeIn direction="right" distance={offset.lateral}>
           <Accordion
             type="single"
             collapsible
@@ -52,7 +53,7 @@ export function FAQAccordion({ eyebrow, title, items }: Props) {
               </AccordionItem>
             ))}
           </Accordion>
-        </Reveal>
+        </FadeIn>
       </div>
     </section>
   );

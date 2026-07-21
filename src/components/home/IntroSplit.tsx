@@ -3,7 +3,10 @@ import Link from "next/link";
 import type { Locale } from "@/content";
 import { localePath } from "@/lib/i18n";
 import { media } from "@/lib/media";
-import { Reveal } from "@/components/shared/Reveal";
+import { FadeIn } from "@/components/motion/FadeIn";
+import { FadeInItem } from "@/components/motion/FadeInItem";
+import { Stagger } from "@/components/motion/Stagger";
+import { duration, offset, staggerDelay } from "@/components/motion/tokens";
 import { Button } from "@/components/ui/button";
 
 type Props = {
@@ -34,8 +37,11 @@ export function IntroSplit({
   return (
     <section className="section surface-sand" aria-labelledby="home-intro-title">
       <div className="container grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 xl:gap-20">
-        <div className="order-2 lg:order-1">
-          <Reveal variant="left">
+        <Stagger
+          className="order-2 lg:order-1"
+          stagger={staggerDelay.loose}
+        >
+          <FadeInItem direction="left" distance={offset.lateral}>
             <p className="eyebrow eyebrow-caps !mb-4">{eyebrow}</p>
             <h2
               id="home-intro-title"
@@ -43,33 +49,33 @@ export function IntroSplit({
             >
               {title}
             </h2>
-          </Reveal>
+          </FadeInItem>
 
-          <Reveal variant="left" delay={90}>
+          <FadeInItem direction="left" distance={offset.lateral}>
             <p className="mt-8 max-w-xl text-[1.05rem] leading-[1.75] text-ink/80 md:text-lg md:leading-[1.7]">
               {body}
             </p>
-          </Reveal>
+          </FadeInItem>
 
-          <Reveal variant="left" delay={160}>
+          <FadeInItem direction="left" distance={offset.lateral}>
             <div className="mt-8 max-w-xl border-l-2 border-ink/10 pl-5 md:pl-6">
               <p className="text-[0.95rem] leading-relaxed text-muted-foreground md:text-[1rem] md:leading-[1.75]">
                 {bodySecondary}
               </p>
             </div>
-          </Reveal>
+          </FadeInItem>
 
-          <Reveal variant="left" delay={230}>
+          <FadeInItem direction="left" distance={offset.lateral}>
             <Button variant="link" asChild className="mt-10 h-auto px-0 text-[1.02rem]">
               <Link href={localePath(locale, "/about")}>
                 {linkLabel}
                 <span aria-hidden="true">→</span>
               </Link>
             </Button>
-          </Reveal>
-        </div>
+          </FadeInItem>
+        </Stagger>
 
-        <Reveal variant="scale" delay={120} className="order-1 lg:order-2">
+        <FadeIn direction="scale" durationSec={duration.slow} className="order-1 lg:order-2">
           <div className="relative mx-auto w-full max-w-[520px] overflow-hidden rounded-[8px] bg-white shadow-[var(--shadow-lg)] lg:mx-0 lg:max-w-none">
             <div className="group relative aspect-[4/5] overflow-hidden md:aspect-[5/6]">
               <Image
@@ -90,7 +96,7 @@ export function IntroSplit({
               <p className="mt-2 text-sm text-white/65">{siteName}</p>
             </div>
           </div>
-        </Reveal>
+        </FadeIn>
       </div>
     </section>
   );

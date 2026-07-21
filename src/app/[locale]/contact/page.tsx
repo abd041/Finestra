@@ -7,7 +7,8 @@ import { ContactForm } from "@/components/contact/ContactForm";
 import { CTABanner } from "@/components/shared/CTABanner";
 import { JsonLd } from "@/components/shared/JsonLd";
 import { PageBanner } from "@/components/shared/PageBanner";
-import { Reveal } from "@/components/shared/Reveal";
+import { FadeIn } from "@/components/motion/FadeIn";
+import { offset } from "@/components/motion/tokens";
 import { getDictionary, isLocale, type Locale } from "@/content";
 import { media, siteConfig } from "@/lib/media";
 import { breadcrumbJsonLd, buildPageMetadata } from "@/lib/seo";
@@ -41,8 +42,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const dict = getDictionary(raw);
   return buildPageMetadata({
     locale: raw,
-    title: dict.nav.contact,
-    description: dict.contactPage.subtitle,
+    title: dict.meta.contactTitle,
+    description: dict.meta.contactDescription,
     path: "/contact",
   });
 }
@@ -93,7 +94,7 @@ export default async function ContactPage({ params }: Props) {
 
       <section className="bg-white py-20 md:py-28">
         <div className="container grid items-center gap-14 lg:grid-cols-2 lg:gap-16 xl:gap-20">
-          <Reveal>
+          <FadeIn direction="left" distance={offset.lateral}>
             <div className="max-w-[28rem]">
               <p className="text-[0.7rem] font-medium uppercase tracking-[0.16em] text-[#111]">
                 {c.infoEyebrow}
@@ -129,11 +130,11 @@ export default async function ContactPage({ params }: Props) {
                 </ContactRow>
               </ul>
             </div>
-          </Reveal>
+          </FadeIn>
 
-          <Reveal delay={100}>
+          <FadeIn direction="right" distance={offset.lateral}>
             <ContactForm locale={locale} dict={dict} />
-          </Reveal>
+          </FadeIn>
         </div>
       </section>
 

@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useEffect, useId, useRef, useState } from "react";
 import type { Testimonial } from "@/content/types";
+import { FadeIn } from "@/components/motion/FadeIn";
+import { offset } from "@/components/motion/tokens";
 import { media } from "@/lib/media";
 import { cn } from "@/lib/utils";
 
@@ -12,7 +14,6 @@ type Props = {
   body?: string;
   items: Testimonial[];
   groupLabel: string;
-  showLabel: string;
 };
 
 function initials(name: string) {
@@ -73,7 +74,7 @@ function TestimonialCard({
           <p className="truncate text-[0.95rem] font-semibold text-[#111]">
             {item.name}
           </p>
-          <p className="mt-0.5 truncate text-[0.8rem] text-[#9ca3af]">
+          <p className="mt-0.5 truncate text-[0.8rem] text-[#6b7280]">
             {item.role}
           </p>
         </div>
@@ -91,7 +92,13 @@ function easeInOutCubic(t: number) {
  * progress is mapped to the card stage center, not the section top
  * (so the open happens when you can actually see it).
  */
-export function Testimonials({ eyebrow, title, items }: Props) {
+export function Testimonials({
+  eyebrow,
+  title,
+  body,
+  items,
+  groupLabel,
+}: Props) {
   const titleId = useId();
   const stageRef = useRef<HTMLDivElement>(null);
   const leftRef = useRef<HTMLDivElement>(null);
@@ -181,6 +188,7 @@ export function Testimonials({ eyebrow, title, items }: Props) {
     <section
       className="relative overflow-x-clip py-20 md:py-28"
       aria-labelledby={titleId}
+      aria-label={groupLabel}
     >
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-white" />
@@ -198,18 +206,26 @@ export function Testimonials({ eyebrow, title, items }: Props) {
         </div>
       </div>
 
-      <div className="relative mx-auto w-[min(900px,calc(100%-2rem))] text-center">
-        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#111]">
-          {eyebrow}
-        </p>
-        <h2
-          id={titleId}
-          className="mx-auto mt-3 max-w-[22ch] font-display text-[clamp(1.75rem,3.4vw,2.75rem)] font-medium leading-[1.15] tracking-[-0.03em] text-[#111]"
-        >
-          {title}
-        </h2>
-      </div>
+      <FadeIn distance={offset.sm}>
+        <div className="relative mx-auto w-[min(900px,calc(100%-2rem))] text-center">
+          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#111]">
+            {eyebrow}
+          </p>
+          <h2
+            id={titleId}
+            className="mx-auto mt-3 max-w-[22ch] font-display text-[clamp(1.75rem,3.4vw,2.75rem)] font-medium leading-[1.15] tracking-[-0.03em] text-[#111]"
+          >
+            {title}
+          </h2>
+          {body && (
+            <p className="mx-auto mt-4 max-w-xl text-[1rem] leading-relaxed text-[#4b5563]">
+              {body}
+            </p>
+          )}
+        </div>
+      </FadeIn>
 
+      {/* Stage has no FadeIn — fan owns transform; ready opacity is the only entrance */}
       <div
         ref={stageRef}
         className={cn(

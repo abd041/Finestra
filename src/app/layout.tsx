@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Figtree, Outfit } from "next/font/google";
+import { defaultLocale, isLocale } from "@/content";
 import { siteConfig } from "@/lib/media";
 import { cn } from "@/lib/utils";
 import "./globals.css";
@@ -23,20 +25,24 @@ export const metadata: Metadata = {
     template: "%s | Finestra International",
   },
   description:
-    "Specialist glass polishing, grinding, protective film and coating — on location worldwide.",
+    "Specialist in glaspolijsten, slijpen, beschermfolie en coating — wereldwijd op locatie.",
   icons: {
     icon: "/favicon.ico",
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headerList = await headers();
+  const headerLocale = headerList.get("x-locale");
+  const lang = isLocale(headerLocale || "") ? headerLocale! : defaultLocale;
+
   return (
     <html
-      lang="nl"
+      lang={lang}
       className={cn("no-js h-full font-sans", figtree.variable, outfit.variable)}
       suppressHydrationWarning
     >

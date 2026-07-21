@@ -4,9 +4,14 @@ import type { Feature, ServiceCard } from "@/content/types";
 import type { Locale } from "@/content";
 import { localePath } from "@/lib/i18n";
 import { media } from "@/lib/media";
-import { Reveal } from "@/components/shared/Reveal";
+import { FadeIn } from "@/components/motion/FadeIn";
+import { FadeInItem } from "@/components/motion/FadeInItem";
+import { Stagger } from "@/components/motion/Stagger";
+import { duration, offset, staggerDelay } from "@/components/motion/tokens";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 type ServiceGridProps = {
   locale: Locale;
@@ -36,7 +41,7 @@ export function ServiceGrid({
     >
       <div className="mx-auto w-[min(1240px,calc(100%-2rem))] md:w-[min(1240px,calc(100%-3.5rem))]">
         {/* Header — left stacked exactly like Bluewake */}
-        <Reveal>
+        <FadeIn distance={offset.sm}>
           <div className="max-w-[34rem]">
             <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-ink">
               {eyebrow}
@@ -54,18 +59,21 @@ export function ServiceGrid({
               <Link href={localePath(locale, "/services")}>{viewAll}</Link>
             </Button>
           </div>
-        </Reveal>
+        </FadeIn>
 
         {/* 3 cards / row · 4th on next row */}
-        <div className="mt-10 grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 lg:mt-12 lg:grid-cols-3 lg:gap-8">
-          {cards.map((card, i) => (
-            <Reveal key={card.id} delay={i * 60} className="flex h-full">
-              <article className="flex h-full w-full flex-col overflow-hidden rounded-[8px] bg-[#f2f2f2]">
+        <Stagger
+          className="mt-10 grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 lg:mt-12 lg:grid-cols-3 lg:gap-8"
+          stagger={staggerDelay.default}
+        >
+          {cards.map((card) => (
+            <FadeInItem key={card.id} className="flex h-full" distance={offset.default}>
+              <Card className="flex h-full w-full flex-col gap-0 overflow-hidden rounded-[8px] border-0 bg-[#f2f2f2] py-0 shadow-none ring-0">
                 {/* Image flush — no top / left / right spacing */}
                 <div className="group relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-[#eaeaea]">
                   <Image
                     src={card.image}
-                    alt=""
+                    alt={card.title}
                     fill
                     className="object-cover object-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
                     sizes="(max-width:640px) 100vw, (max-width:1024px) 45vw, 380px"
@@ -73,7 +81,7 @@ export function ServiceGrid({
                 </div>
 
                 {/* Content keeps side + bottom padding */}
-                <div className="flex flex-1 flex-col px-6 pb-6 pt-6 md:px-8 md:pb-8 md:pt-7">
+                <CardContent className="flex flex-1 flex-col px-6 pb-6 pt-6 md:px-8 md:pb-8 md:pt-7">
                   <h3 className="shrink-0 font-display text-[1.55rem] font-medium leading-tight tracking-[-0.03em] text-ink md:text-[1.7rem]">
                     {card.title}
                   </h3>
@@ -101,11 +109,11 @@ export function ServiceGrid({
                       <Link href={localePath(locale, card.href)}>{learnMore}</Link>
                     </Button>
                   </div>
-                </div>
-              </article>
-            </Reveal>
+                </CardContent>
+              </Card>
+            </FadeInItem>
           ))}
-        </div>
+        </Stagger>
       </div>
     </section>
   );
@@ -151,7 +159,7 @@ export function FeatureRow({
         >
           {/* Left column */}
           <div className="flex flex-col justify-center">
-            <Reveal variant="left">
+            <FadeIn direction="left" distance={offset.lateral}>
               <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-ink">
                 {eyebrow}
               </p>
@@ -163,36 +171,49 @@ export function FeatureRow({
                   {body}
                 </p>
               )}
-            </Reveal>
+            </FadeIn>
 
             {/* Vertical feature list + hairline dividers (Bluewake) */}
-            <ul className="mt-10 md:mt-12">
+            <Stagger
+              as="ul"
+              className="mt-10 md:mt-12"
+              stagger={staggerDelay.default}
+            >
               {list.map((feature, i) => (
-                <Reveal key={feature.title} delay={80 + i * 70} as="li">
-                  <div
-                    className={`border-t border-[#e5e5e5] py-6 ${
-                      i === list.length - 1 ? "border-b" : ""
-                    }`}
-                  >
-                    <h3 className="font-display text-[1.25rem] font-medium tracking-[-0.02em] text-ink md:text-[1.35rem]">
-                      {feature.title}
-                    </h3>
-                    <p className="mt-2 max-w-md text-[0.95rem] leading-relaxed text-[#666]">
-                      {feature.description}
-                    </p>
+                <FadeInItem
+                  key={feature.title}
+                  as="li"
+                  distance={offset.sm}
+                  durationSec={duration.fast}
+                >
+                  <div>
+                    <Separator className="bg-[#e5e5e5]" />
+                    <div className="py-6">
+                      <h3 className="font-display text-[1.25rem] font-medium tracking-[-0.02em] text-ink md:text-[1.35rem]">
+                        {feature.title}
+                      </h3>
+                      <p className="mt-2 max-w-md text-[0.95rem] leading-relaxed text-[#666]">
+                        {feature.description}
+                      </p>
+                    </div>
+                    {i === list.length - 1 && <Separator className="bg-[#e5e5e5]" />}
                   </div>
-                </Reveal>
+                </FadeInItem>
               ))}
-            </ul>
+            </Stagger>
           </div>
 
           {/* Right — full-bleed founder panel */}
           {showFounder && (
-            <Reveal variant="scale" delay={120} className="h-full min-h-[480px] lg:min-h-0">
+            <FadeIn
+              direction="scale"
+              durationSec={duration.slow}
+              className="h-full min-h-[480px] lg:min-h-0"
+            >
               <div className="group relative h-full min-h-[520px] overflow-hidden rounded-[8px] lg:min-h-full">
                 <Image
                   src={founderImage || media.craftsman}
-                  alt={founderName || ""}
+                  alt={founderName || "Founder"}
                   fill
                   className="object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
                   sizes="(max-width:1024px) 100vw, 50vw"
@@ -245,7 +266,7 @@ export function FeatureRow({
                   </blockquote>
                 </div>
               </div>
-            </Reveal>
+            </FadeIn>
           )}
         </div>
       </div>

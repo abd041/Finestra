@@ -86,7 +86,6 @@ export default async function HomePage({ params }: Props) {
         body={dict.home.testimonialsBody}
         items={dict.testimonials}
         groupLabel={dict.a11y.testimonials}
-        showLabel={dict.a11y.showTestimonial}
       />
       <FAQAccordion eyebrow={dict.home.faqEyebrow} title={dict.home.faqTitle} items={dict.faqs} />
       <CTABanner

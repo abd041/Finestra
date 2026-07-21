@@ -1,5 +1,8 @@
 import Image from "next/image";
-import { Reveal } from "@/components/shared/Reveal";
+import { FadeIn } from "@/components/motion/FadeIn";
+import { FadeInItem } from "@/components/motion/FadeInItem";
+import { Stagger } from "@/components/motion/Stagger";
+import { duration, offset, staggerDelay } from "@/components/motion/tokens";
 import { ParallaxMedia } from "@/components/shared/ParallaxMedia";
 import { media } from "@/lib/media";
 
@@ -30,8 +33,8 @@ export function MissionStory({
     <section className="section bg-white" aria-labelledby="about-mission-title">
       <div className="container">
         <div className="grid items-start gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 xl:gap-20">
-          <div>
-            <Reveal variant="left">
+          <Stagger stagger={staggerDelay.loose}>
+            <FadeInItem direction="left" distance={offset.lateral}>
               <p className="eyebrow eyebrow-caps !mb-4">{missionEyebrow}</p>
               <h2
                 id="about-mission-title"
@@ -39,15 +42,15 @@ export function MissionStory({
               >
                 {missionTitle}
               </h2>
-            </Reveal>
+            </FadeInItem>
 
-            <Reveal variant="left" delay={80}>
+            <FadeInItem direction="left" distance={offset.lateral}>
               <p className="mt-7 max-w-xl text-[1.08rem] leading-[1.75] text-ink/80 md:text-lg md:leading-[1.7]">
                 {missionBody}
               </p>
-            </Reveal>
+            </FadeInItem>
 
-            <Reveal variant="left" delay={140}>
+            <FadeInItem direction="left" distance={offset.lateral}>
               <ul className="mt-10 divide-y divide-[var(--line)] border-y border-[var(--line)]">
                 {pills.map((pill, i) => (
                   <li
@@ -63,10 +66,10 @@ export function MissionStory({
                   </li>
                 ))}
               </ul>
-            </Reveal>
-          </div>
+            </FadeInItem>
+          </Stagger>
 
-          <Reveal variant="scale" delay={100}>
+          <FadeIn direction="scale" durationSec={duration.slow}>
             <div className="relative">
               <div
                 className="pointer-events-none absolute -inset-3 rounded-[calc(0.75rem+0.65rem)] border border-[var(--line)] md:-inset-4"
@@ -85,12 +88,12 @@ export function MissionStory({
                 <div className="absolute inset-0 bg-gradient-to-t from-navy/50 via-transparent to-transparent" />
               </div>
             </div>
-          </Reveal>
+          </FadeIn>
         </div>
 
         <div className="mt-14 border-t border-[var(--line)] pt-14 md:mt-16 md:pt-16 lg:mt-20 lg:pt-20">
           <div className="grid items-start gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
-            <Reveal variant="left">
+            <FadeIn direction="left" distance={offset.lateral}>
               <p className="eyebrow eyebrow-caps !mb-4">{storyEyebrow}</p>
               <h3
                 id="about-story-title"
@@ -98,24 +101,27 @@ export function MissionStory({
               >
                 {storyTitle}
               </h3>
-            </Reveal>
+            </FadeIn>
 
-            <div className="max-w-2xl">
+            <Stagger
+              className="max-w-2xl"
+              stagger={staggerDelay.default}
+            >
               {lead && (
-                <Reveal variant="right" delay={60}>
+                <FadeInItem direction="right" distance={offset.lateral}>
                   <p className="border-l-2 border-ink/15 pl-5 text-[1.08rem] leading-[1.75] text-ink md:pl-6 md:text-lg md:leading-[1.7]">
                     {lead}
                   </p>
-                </Reveal>
+                </FadeInItem>
               )}
-              <div className="mt-8 space-y-5 text-[1rem] leading-relaxed text-muted-foreground md:mt-9 md:space-y-6 md:text-[1.05rem] md:leading-[1.75]">
-                {rest.map((para, i) => (
-                  <Reveal key={para.slice(0, 48)} delay={90 + i * 50}>
-                    <p>{para}</p>
-                  </Reveal>
-                ))}
-              </div>
-            </div>
+              {rest.map((para) => (
+                <FadeInItem key={para.slice(0, 48)} distance={offset.sm}>
+                  <p className="mt-5 text-[1rem] leading-relaxed text-muted-foreground md:mt-6 md:text-[1.05rem] md:leading-[1.75]">
+                    {para}
+                  </p>
+                </FadeInItem>
+              ))}
+            </Stagger>
           </div>
         </div>
       </div>

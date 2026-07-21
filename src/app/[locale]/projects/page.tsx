@@ -20,8 +20,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const dict = getDictionary(raw);
   return buildPageMetadata({
     locale: raw,
-    title: dict.nav.projects,
-    description: dict.projectsPage.subtitle,
+    title: dict.meta.projectsTitle,
+    description: dict.meta.projectsDescription,
     path: "/projects",
   });
 }
@@ -66,7 +66,6 @@ export default async function ProjectsPage({ params }: Props) {
         body={dict.home.testimonialsBody}
         items={dict.testimonials}
         groupLabel={dict.a11y.testimonials}
-        showLabel={dict.a11y.showTestimonial}
       />
       <CTABanner
         eyebrow={dict.projectsPage.ctaEyebrow}

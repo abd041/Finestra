@@ -1,6 +1,9 @@
 import Image from "next/image";
 import type { ServiceDetail } from "@/content/types";
-import { Reveal } from "@/components/shared/Reveal";
+import { FadeIn } from "@/components/motion/FadeIn";
+import { FadeInItem } from "@/components/motion/FadeInItem";
+import { Stagger } from "@/components/motion/Stagger";
+import { duration, offset, staggerDelay } from "@/components/motion/tokens";
 
 type Spec = { label: string; value: string };
 
@@ -40,8 +43,7 @@ export function ServiceSection({
       aria-labelledby={`${service.id}-title`}
     >
       <div className="container">
-        {/* Horizon Drift–style header: title, tagline, metrics */}
-        <Reveal>
+        <FadeIn distance={offset.sm}>
           <div className="max-w-4xl">
             <p className="eyebrow">{service.tagline}</p>
             <h2
@@ -50,29 +52,30 @@ export function ServiceSection({
             >
               {service.title}
             </h2>
-            <dl className="mt-10 grid grid-cols-3 gap-4 border-y border-[var(--line)] py-7 md:gap-8">
+            <dl className="mt-10 grid grid-cols-2 gap-4 border-y border-[var(--line)] py-7 sm:gap-6 md:grid-cols-4 md:gap-8">
               {specs.map((spec) => (
-                <div key={spec.label}>
+                <div key={spec.label} className="min-w-0">
                   <dt className="text-[0.7rem] uppercase tracking-[0.14em] text-muted-foreground">
                     {spec.label}
                   </dt>
-                  <dd className="mt-2 font-display text-2xl text-ink md:text-3xl">
+                  <dd className="mt-2 break-words font-display text-xl text-ink sm:text-2xl md:text-3xl">
                     {spec.value}
                   </dd>
                 </div>
               ))}
             </dl>
-            <p className="mt-8 max-w-3xl text-muted-foreground md:text-lg">{service.description}</p>
+            <p className="mt-8 max-w-3xl text-muted-foreground md:text-lg">
+              {service.description}
+            </p>
           </div>
-        </Reveal>
+        </FadeIn>
 
-        {/* Detail layout: hero image + process checklist */}
         <div
-      className={`mt-12 grid items-start gap-10 lg:grid-cols-2 lg:gap-14 ${
+          className={`mt-12 grid items-start gap-10 lg:grid-cols-2 lg:gap-14 ${
             reverse ? "lg:[&>*:first-child]:order-2" : ""
           }`}
         >
-          <Reveal>
+          <FadeIn direction="scale" durationSec={duration.medium}>
             <div className="media-frame relative aspect-[4/5] overflow-hidden rounded-[var(--radius-panel)] shadow-[var(--shadow-lg)] md:aspect-[5/6]">
               <Image
                 src={image}
@@ -82,9 +85,9 @@ export function ServiceSection({
                 sizes="(max-width:1024px) 100vw, 50vw"
               />
             </div>
-          </Reveal>
+          </FadeIn>
 
-          <Reveal delay={100}>
+          <FadeIn distance={offset.sm}>
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">
                 {processLabel}
@@ -115,19 +118,22 @@ export function ServiceSection({
                 <p className="mt-3 text-ink md:text-lg">{service.whenApplies}</p>
               </div>
             </div>
-          </Reveal>
+          </FadeIn>
         </div>
 
         {showBeforeAfter && beforeImage && afterImage && (
           <div className="mt-12 md:mt-14">
-            <Reveal>
+            <FadeIn distance={offset.sm}>
               <p className="eyebrow">{galleryLabel}</p>
               <h3 className="max-w-xl text-[clamp(1.75rem,3vw,2.5rem)] text-ink">
                 {beforeLabel} &amp; {afterLabel}
               </h3>
-            </Reveal>
-            <div className="mt-10 grid gap-5 md:grid-cols-2">
-              <Reveal>
+            </FadeIn>
+            <Stagger
+              className="mt-10 grid gap-5 md:grid-cols-2"
+              stagger={staggerDelay.default}
+            >
+              <FadeInItem distance={offset.sm}>
                 <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-panel)] shadow-[var(--shadow-md)] md:aspect-[5/4]">
                   <Image
                     src={beforeImage}
@@ -140,8 +146,8 @@ export function ServiceSection({
                     {beforeLabel}
                   </span>
                 </div>
-              </Reveal>
-              <Reveal delay={100}>
+              </FadeInItem>
+              <FadeInItem distance={offset.sm}>
                 <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-panel)] shadow-[var(--shadow-md)] md:aspect-[5/4] md:mt-10">
                   <Image
                     src={afterImage}
@@ -154,8 +160,8 @@ export function ServiceSection({
                     {afterLabel}
                   </span>
                 </div>
-              </Reveal>
-            </div>
+              </FadeInItem>
+            </Stagger>
           </div>
         )}
       </div>

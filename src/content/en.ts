@@ -6,6 +6,21 @@ export const en: Dictionary = {
     defaultTitle: "Scratch-free glass without replacement",
     defaultDescription:
       "Specialist glass polishing, grinding, protective film and coating for superyachts and commercial glass — on location worldwide.",
+    servicesTitle: "Glass polishing, grinding, film & coating",
+    servicesDescription:
+      "Optical polishing, controlled grinding, protective film and coating for yacht and architectural glass — restored on location.",
+    projectsTitle: "Projects & restored glass gallery",
+    projectsDescription:
+      "Before-and-after results and project photography from yacht and commercial glass restoration by Finestra International.",
+    aboutTitle: "About Patrick Smid & Finestra",
+    aboutDescription:
+      "Meet Patrick Smid and the craft behind Finestra International — specialist glass restoration for yachts and premium properties worldwide.",
+    contactTitle: "Request a glass restoration quote",
+    contactDescription:
+      "Contact Finestra International for polishing, grinding, film or coating. Based in Huijbergen, Netherlands — working worldwide.",
+    privacyTitle: "Privacy policy",
+    privacyDescription:
+      "How Finestra International collects, uses and protects personal data from enquiries and website use.",
   },
   nav: {
     home: "Home",

@@ -3,7 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { Reveal } from "./Reveal";
+import { FadeIn } from "@/components/motion/FadeIn";
+import { FadeInItem } from "@/components/motion/FadeInItem";
+import { Stagger } from "@/components/motion/Stagger";
+import { duration, offset, staggerDelay } from "@/components/motion/tokens";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   beforeLabel: string;
@@ -97,7 +101,6 @@ export function BeforeAfter({
     };
   }, [endDrag, updateFromClientX]);
 
-  /* One-time demo scrub — cancelled as soon as the user interacts */
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -167,8 +170,8 @@ export function BeforeAfter({
   return (
     <section className="section" aria-labelledby={labelId}>
       <div className="container grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 xl:gap-20">
-        <div>
-          <Reveal variant="left">
+        <Stagger stagger={staggerDelay.loose}>
+          <FadeInItem direction="left" distance={offset.lateral}>
             <p className="eyebrow eyebrow-caps !mb-4">{eyebrow}</p>
             <h2
               id={labelId}
@@ -176,114 +179,120 @@ export function BeforeAfter({
             >
               {title}
             </h2>
-          </Reveal>
-          <Reveal variant="left" delay={80}>
+          </FadeInItem>
+          <FadeInItem direction="left" distance={offset.lateral}>
             <p className="mt-7 max-w-md text-[1.05rem] leading-relaxed text-muted-foreground md:text-lg md:leading-[1.7]">
               {body}
             </p>
-          </Reveal>
+          </FadeInItem>
           {ctaLabel && ctaHref && (
-            <Reveal variant="left" delay={140}>
-              <Link href={ctaHref} className="link-arrow mt-10 inline-flex text-[1.02rem]">
-                {ctaLabel}
-                <span aria-hidden="true">→</span>
-              </Link>
-            </Reveal>
+            <FadeInItem direction="left" distance={offset.lateral}>
+              <Button
+                variant="link"
+                asChild
+                className="link-arrow mt-10 h-auto px-0 text-[1.02rem]"
+              >
+                <Link href={ctaHref}>
+                  {ctaLabel}
+                  <span aria-hidden="true">→</span>
+                </Link>
+              </Button>
+            </FadeInItem>
           )}
-        </div>
+        </Stagger>
 
-        <Reveal variant="scale" delay={120}>
-          <div className="relative mx-auto w-full max-w-[640px] lg:mx-0 lg:max-w-none">
+        <FadeIn direction="scale" durationSec={duration.medium}>
+          <div
+            ref={containerRef}
+            className={`ba-frame relative mx-auto min-h-[300px] w-full max-w-[640px] aspect-[5/4] cursor-ew-resize overflow-hidden rounded-[8px] bg-[#0b1520] shadow-[var(--shadow-lg)] select-none touch-none md:min-h-[440px] md:aspect-[4/3] lg:mx-0 lg:max-w-none ${
+              active ? "ba-frame-active" : ""
+            }`}
+            onPointerDown={(e) => {
+              if (e.button !== 0 && e.pointerType === "mouse") return;
+              startDrag(e.clientX, e.pointerId, e.currentTarget);
+            }}
+          >
+            <Image
+              src={afterImage}
+              alt={afterLabel}
+              fill
+              draggable={false}
+              className="pointer-events-none object-cover"
+              sizes="(max-width:1024px) 100vw, 55vw"
+            />
             <div
-              ref={containerRef}
-              className={`ba-frame relative min-h-[300px] aspect-[5/4] cursor-ew-resize overflow-hidden rounded-[8px] bg-sand shadow-[var(--shadow-lg)] select-none touch-none md:min-h-[440px] md:aspect-[4/3] ${
-                active ? "ba-frame-active" : ""
-              }`}
-              onPointerDown={(e) => {
-                if (e.button !== 0 && e.pointerType === "mouse") return;
-                startDrag(e.clientX, e.pointerId, e.currentTarget);
-              }}
+              className="pointer-events-none absolute inset-0"
+              style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
             >
               <Image
-                src={afterImage}
-                alt={`${afterLabel}: polished optically clear yacht glass`}
+                src={beforeImage}
+                alt={beforeLabel}
                 fill
                 draggable={false}
                 className="pointer-events-none object-cover"
                 sizes="(max-width:1024px) 100vw, 55vw"
               />
-              <div
-                className="pointer-events-none absolute inset-0"
-                style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
-              >
-                <Image
-                  src={beforeImage}
-                  alt={`${beforeLabel}: scratched and hazed yacht glass`}
-                  fill
-                  draggable={false}
-                  className="pointer-events-none object-cover"
-                  sizes="(max-width:1024px) 100vw, 55vw"
-                />
-              </div>
-
-              <div
-                className="pointer-events-none absolute inset-y-0 z-10 w-px bg-white/90 shadow-[0_0_20px_rgba(0,0,0,0.35)]"
-                style={{ left: `${position}%` }}
-              >
-                <button
-                  type="button"
-                  className="ba-handle pointer-events-auto absolute top-1/2 left-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize items-center justify-center rounded-full border border-white/80 bg-white text-ink shadow-[0_12px_40px_rgba(10,15,20,0.28)] transition-[box-shadow,background-color] duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
-                  role="slider"
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-valuenow={Math.round(position)}
-                  aria-valuetext={`${Math.round(position)} percent ${beforeLabel}`}
-                  aria-label={sliderLabel}
-                  onKeyDown={onKeyDown}
-                  onPointerDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    startDrag(e.clientX, e.pointerId, containerRef.current ?? undefined);
-                  }}
-                >
-                  <span className="flex items-center gap-0.5" aria-hidden="true">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                      <path
-                        d="M8.5 3.5 5 7l3.5 3.5"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                      <path
-                        d="M5.5 3.5 9 7l-3.5 3.5"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                </button>
-              </div>
-
-              <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex justify-between p-5 md:p-6">
-                <span className="rounded-full bg-navy/80 px-3.5 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white backdrop-blur-sm">
-                  {beforeLabel}
-                </span>
-                <span className="rounded-full bg-white/90 px-3.5 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-ink backdrop-blur-sm">
-                  {afterLabel}
-                </span>
-              </div>
-
-              <p className="pointer-events-none absolute inset-x-0 bottom-5 z-20 text-center text-[0.7rem] font-medium uppercase tracking-[0.18em] text-white/80 drop-shadow md:bottom-6">
-                {dragHint}
-              </p>
             </div>
+
+            <div
+              className="pointer-events-none absolute inset-y-0 z-10 w-px bg-white/90 shadow-[0_0_20px_rgba(0,0,0,0.35)]"
+              style={{ left: `${position}%` }}
+            >
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="ba-handle pointer-events-auto absolute top-1/2 left-1/2 h-14 w-14 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize rounded-full border border-white/80 bg-white text-ink shadow-[0_12px_40px_rgba(10,15,20,0.28)] hover:bg-white hover:text-ink focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:outline-none active:translate-y-0"
+                role="slider"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={Math.round(position)}
+                aria-valuetext={`${Math.round(position)} percent ${beforeLabel}`}
+                aria-label={sliderLabel}
+                onKeyDown={onKeyDown}
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  startDrag(e.clientX, e.pointerId, containerRef.current ?? undefined);
+                }}
+              >
+                <span className="flex items-center gap-0.5" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path
+                      d="M8.5 3.5 5 7l3.5 3.5"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path
+                      d="M5.5 3.5 9 7l-3.5 3.5"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+              </Button>
+            </div>
+
+            <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex justify-between p-5 md:p-6">
+              <span className="rounded-full bg-navy/80 px-3.5 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white backdrop-blur-sm">
+                {beforeLabel}
+              </span>
+              <span className="rounded-full bg-white/90 px-3.5 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-ink backdrop-blur-sm">
+                {afterLabel}
+              </span>
+            </div>
+
+            <p className="pointer-events-none absolute inset-x-0 bottom-5 z-20 text-center text-[0.7rem] font-medium uppercase tracking-[0.18em] text-white/80 drop-shadow md:bottom-6">
+              {dragHint}
+            </p>
           </div>
-        </Reveal>
+        </FadeIn>
       </div>
     </section>
   );

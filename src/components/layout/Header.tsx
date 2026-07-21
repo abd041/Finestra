@@ -9,6 +9,12 @@ import { localePath } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from "@/components/ui/navigation-menu";
+import {
   Sheet,
   SheetContent,
   SheetHeader,
@@ -29,31 +35,11 @@ function isActivePath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function NavLink({
-  href,
-  label,
-  active,
-  onClick,
-}: {
-  href: string;
-  label: string;
-  active: boolean;
-  onClick?: () => void;
-}) {
-  return (
-    <Link
-      href={href}
-      aria-current={active ? "page" : undefined}
-      onClick={onClick}
-      className={cn(
-        "text-[0.9rem] font-medium tracking-[-0.01em] transition-colors",
-        active ? "text-ink" : "text-muted-foreground hover:text-ink"
-      )}
-    >
-      {label}
-    </Link>
+const navLinkClass = (active: boolean) =>
+  cn(
+    "rounded-none bg-transparent p-0 text-[0.9rem] font-medium tracking-[-0.01em] shadow-none transition-colors hover:bg-transparent focus:bg-transparent focus-visible:ring-2 focus-visible:ring-ink/20 focus-visible:ring-offset-2 data-active:bg-transparent data-active:hover:bg-transparent data-active:focus:bg-transparent",
+    active ? "text-ink" : "text-muted-foreground hover:text-ink"
   );
-}
 
 export function Header({ locale, dict }: Props) {
   const pathname = usePathname();
@@ -78,10 +64,6 @@ export function Header({ locale, dict }: Props) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
-
   return (
     <header
       className={cn(
@@ -92,7 +74,6 @@ export function Header({ locale, dict }: Props) {
       )}
     >
       <div className="container flex h-[var(--header-h)] items-center justify-between gap-4">
-        {/* Mobile brand */}
         <Link
           href={localePath(locale, "/")}
           className="relative z-10 leading-none lg:hidden"
@@ -105,21 +86,27 @@ export function Header({ locale, dict }: Props) {
           </span>
         </Link>
 
-        {/* Desktop: Bluewake-style split around centered logo */}
         <div className="hidden w-full items-center lg:grid lg:grid-cols-[1fr_auto_1fr]">
-          <nav
-            className="flex items-center justify-start gap-6 xl:gap-8"
+          <NavigationMenu
+            viewport={false}
+            className="max-w-none flex-none justify-start"
             aria-label={dict.common.primaryNav}
           >
-            {leftLinks.map((link) => (
-              <NavLink
-                key={link.href}
-                href={link.href}
-                label={link.label}
-                active={isActivePath(pathname, link.href)}
-              />
-            ))}
-          </nav>
+            <NavigationMenuList className="gap-6 xl:gap-8">
+              {leftLinks.map((link) => {
+                const active = isActivePath(pathname, link.href);
+                return (
+                  <NavigationMenuItem key={link.href}>
+                    <NavigationMenuLink asChild className={navLinkClass(active)} active={active}>
+                      <Link href={link.href} aria-current={active ? "page" : undefined}>
+                        {link.label}
+                      </Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                );
+              })}
+            </NavigationMenuList>
+          </NavigationMenu>
 
           <Link
             href={localePath(locale, "/")}
@@ -134,28 +121,37 @@ export function Header({ locale, dict }: Props) {
           </Link>
 
           <div className="flex items-center justify-end gap-4 xl:gap-5">
-            <nav className="flex items-center gap-6 xl:gap-8" aria-label="Secondary">
-              {rightLinks.map((link) => (
-                <NavLink
-                  key={link.href}
-                  href={link.href}
-                  label={link.label}
-                  active={isActivePath(pathname, link.href)}
-                />
-              ))}
-            </nav>
+            <NavigationMenu
+              viewport={false}
+              className="max-w-none flex-none"
+              aria-label={`${dict.nav.about}, ${dict.nav.contact}`}
+            >
+              <NavigationMenuList className="gap-6 xl:gap-8">
+                {rightLinks.map((link) => {
+                  const active = isActivePath(pathname, link.href);
+                  return (
+                    <NavigationMenuItem key={link.href}>
+                      <NavigationMenuLink asChild className={navLinkClass(active)} active={active}>
+                        <Link href={link.href} aria-current={active ? "page" : undefined}>
+                          {link.label}
+                        </Link>
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+                  );
+                })}
+              </NavigationMenuList>
+            </NavigationMenu>
             <LanguageSwitcher locale={locale} label={dict.common.language} />
             <Button
               asChild
               size="sm"
-              className="bg-ink text-white hover:bg-ink/90"
+              className="h-10 rounded-full bg-black px-5 text-[0.875rem] font-semibold text-white hover:bg-black/90"
             >
               <Link href={localePath(locale, "/contact")}>{dict.nav.cta}</Link>
             </Button>
           </div>
         </div>
 
-        {/* Mobile menu */}
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button
@@ -167,7 +163,11 @@ export function Header({ locale, dict }: Props) {
               <Menu />
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="flex w-full max-w-sm flex-col px-0">
+          <SheetContent
+            side="right"
+            className="flex w-full max-w-sm flex-col px-0"
+            closeLabel={dict.common.closeMenu}
+          >
             <SheetHeader className="border-b border-border px-6 pb-4 text-left">
               <SheetTitle className="font-display text-2xl tracking-[-0.03em]">
                 Finestra
@@ -180,20 +180,25 @@ export function Header({ locale, dict }: Props) {
               {links.map((link) => {
                 const active = isActivePath(pathname, link.href);
                 return (
-                  <Link
+                  <Button
                     key={link.href}
-                    href={link.href}
-                    aria-current={active ? "page" : undefined}
+                    variant="ghost"
+                    asChild
                     className={cn(
-                      "rounded-xl px-3 py-3 text-lg transition-colors",
+                      "h-auto justify-start rounded-xl px-3 py-3 text-lg font-normal shadow-none",
                       active
                         ? "bg-muted text-ink"
                         : "text-muted-foreground hover:bg-muted/70 hover:text-ink"
                     )}
-                    onClick={() => setOpen(false)}
                   >
-                    {link.label}
-                  </Link>
+                    <Link
+                      href={link.href}
+                      aria-current={active ? "page" : undefined}
+                      onClick={() => setOpen(false)}
+                    >
+                      {link.label}
+                    </Link>
+                  </Button>
                 );
               })}
             </nav>

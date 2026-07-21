@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Reveal } from "./Reveal";
+import { FadeIn } from "@/components/motion/FadeIn";
+import { duration } from "@/components/motion/tokens";
 import { media, siteConfig } from "@/lib/media";
 import { Button } from "@/components/ui/button";
 
@@ -46,17 +47,21 @@ export function CTABanner({
           quality={85}
         />
         <div
-          className="absolute inset-0 bg-[#070d14]/30"
+          className="absolute inset-0 bg-[#070d14]/55"
           aria-hidden="true"
         />
         <div
-          className="absolute inset-0 bg-gradient-to-t from-[#070d14]/45 via-[#070d14]/10 to-[#070d14]/20"
+          className="absolute inset-0 bg-gradient-to-t from-[#070d14]/75 via-[#070d14]/35 to-[#070d14]/40"
           aria-hidden="true"
         />
       </div>
 
       <div className="relative z-10 mx-auto flex min-h-[min(85vh,780px)] w-[min(920px,calc(100%-2rem))] flex-col items-center justify-center py-28 text-center md:py-36 lg:min-h-[680px] lg:py-40">
-        <Reveal className="flex w-full flex-col items-center">
+        {/* Single wrapper — no nested FadeIn (avoids double motion) */}
+        <FadeIn
+          className="flex w-full flex-col items-center"
+          durationSec={duration.medium}
+        >
           {eyebrow && (
             <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/90 [text-shadow:0_1px_12px_rgba(0,0,0,0.35)]">
               {eyebrow}
@@ -82,13 +87,13 @@ export function CTABanner({
             <Link href={ctaHref}>{ctaLabel}</Link>
           </Button>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-white/75">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-white/90">
             {siteConfig.hasPhone && (
               <a
                 href={siteConfig.phoneHref}
                 className="transition hover:text-white"
               >
-                <span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-white/50">
+                <span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-white/75">
                   {phoneLabel}
                 </span>
                 {siteConfig.phoneDisplay}
@@ -111,7 +116,7 @@ export function CTABanner({
               {siteConfig.email}
             </a>
           </div>
-        </Reveal>
+        </FadeIn>
       </div>
     </section>
   );

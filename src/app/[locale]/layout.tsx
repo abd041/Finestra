@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { MotionProvider } from "@/components/motion/MotionProvider";
 import { JsonLd } from "@/components/shared/JsonLd";
 import { SetHtmlLang } from "@/components/shared/SetHtmlLang";
 import { SkipLink } from "@/components/shared/SkipLink";
@@ -49,13 +50,15 @@ export default async function LocaleLayout({ children, params }: Props) {
       <SetHtmlLang locale={locale} />
       <JsonLd data={organizationJsonLd(dict.meta.defaultDescription, locale)} />
       <SkipLink label={dict.common.skipToContent} />
-      <div className="flex min-h-full flex-col">
-        <Header locale={locale} dict={dict} />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <Footer locale={locale} dict={dict} />
-      </div>
+      <MotionProvider>
+        <div className="flex min-h-full flex-col">
+          <Header locale={locale} dict={dict} />
+          <main id="main" className="flex-1">
+            {children}
+          </main>
+          <Footer locale={locale} dict={dict} />
+        </div>
+      </MotionProvider>
     </>
   );
 }
