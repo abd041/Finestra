@@ -152,7 +152,11 @@ export function Footer({ locale, dict }: Props) {
             {dict.footer.rights}
           </p>
           <div className="flex flex-wrap items-center gap-5">
-            <LanguageSwitcher locale={locale} label={dict.common.language} />
+            <LanguageSwitcher
+              locale={locale}
+              label={dict.common.language}
+              tone="dark"
+            />
           </div>
         </div>
       </div>

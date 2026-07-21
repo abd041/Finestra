@@ -108,7 +108,7 @@ export function MissionStory({
                   </p>
                 </Reveal>
               )}
-              <div className="mt-8 space-y-5 text-[1rem] leading-relaxed text-muted md:mt-9 md:space-y-6 md:text-[1.05rem] md:leading-[1.75]">
+              <div className="mt-8 space-y-5 text-[1rem] leading-relaxed text-muted-foreground md:mt-9 md:space-y-6 md:text-[1.05rem] md:leading-[1.75]">
                 {rest.map((para, i) => (
                   <Reveal key={para.slice(0, 48)} delay={90 + i * 50}>
                     <p>{para}</p>

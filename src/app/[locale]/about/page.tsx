@@ -76,7 +76,7 @@ export default async function AboutPage({ params }: Props) {
           <Reveal>
             <div className="section-head max-w-2xl">
               <h2 className="text-[clamp(2.1rem,4vw,3.4rem)] text-ink">{a.spotlightTitle}</h2>
-              <p className="mt-5 text-muted md:text-lg">{a.spotlightBody}</p>
+              <p className="mt-5 text-muted-foreground md:text-lg">{a.spotlightBody}</p>
             </div>
           </Reveal>
           <Reveal delay={80}>
@@ -93,7 +93,7 @@ export default async function AboutPage({ params }: Props) {
               <div className="flex flex-col justify-center p-8 md:p-12 lg:p-14">
                 <p className="eyebrow">{a.founderTitle}</p>
                 <p className="font-display text-[clamp(2rem,3.5vw,3rem)] text-ink">{a.founderName}</p>
-                <p className="mt-2 text-muted">{a.founderRole}</p>
+                <p className="mt-2 text-muted-foreground">{a.founderRole}</p>
                 <blockquote className="mt-8 border-t border-[var(--line)] pt-8 font-display text-[clamp(1.25rem,2.4vw,1.75rem)] leading-snug text-ink">
                   “{a.founderQuote}”
                 </blockquote>

@@ -4,6 +4,7 @@ export type ContactPayload = {
   name: string;
   email: string;
   phone?: string;
+  vessel?: string;
   service?: string;
   message: string;
   locale?: string;
@@ -35,6 +36,7 @@ export async function sendContactEmail(payload: ContactPayload) {
     `Name: ${payload.name}`,
     `Email: ${payload.email}`,
     `Phone: ${payload.phone || "—"}`,
+    `Vessel / company: ${payload.vessel || "—"}`,
     `Service: ${payload.service || "—"}`,
     `Locale: ${payload.locale || "—"}`,
     "",

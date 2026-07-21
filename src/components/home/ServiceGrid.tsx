@@ -5,44 +5,8 @@ import type { Locale } from "@/content";
 import { localePath } from "@/lib/i18n";
 import { media } from "@/lib/media";
 import { Reveal } from "@/components/shared/Reveal";
-
-const featureIcons = [
-  <svg key="a" viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
-    <path
-      d="M12 3v18M8 8.5c0-1.7 1.8-3 4-3s4 1.3 4 3-1.8 3-4 3-4 1.3-4 3 1.8 3 4 3 4-1.3 4-3"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-    />
-  </svg>,
-  <svg key="b" viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
-    <circle cx="12" cy="12" r="8.25" stroke="currentColor" strokeWidth="1.7" />
-    <path d="M12 8v4.5l3 1.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-  </svg>,
-  <svg key="c" viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
-    <path
-      d="M12 3.5 19 7v5.2c0 4.1-2.8 7.8-7 8.8-4.2-1-7-4.7-7-8.8V7l7-3.5Z"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinejoin="round"
-    />
-    <path
-      d="m9.2 12.1 1.9 1.9 3.7-3.8"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>,
-  <svg key="d" viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
-    <circle cx="12" cy="12" r="8.25" stroke="currentColor" strokeWidth="1.7" />
-    <path
-      d="M3.8 12h16.4M12 3.8c2.4 2.6 2.4 13.8 0 16.4M12 3.8c-2.4 2.6-2.4 13.8 0 16.4"
-      stroke="currentColor"
-      strokeWidth="1.7"
-    />
-  </svg>,
-];
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 type ServiceGridProps = {
   locale: Locale;
@@ -53,6 +17,10 @@ type ServiceGridProps = {
   viewAll: string;
 };
 
+/**
+ * Bluewake "Discover Our Boats" card pattern — matched to template:
+ * stacked header (eyebrow → title → black CTA) + 3-col grid (4th wraps).
+ */
 export function ServiceGrid({
   locale,
   eyebrow,
@@ -62,84 +30,81 @@ export function ServiceGrid({
   viewAll,
 }: ServiceGridProps) {
   return (
-    <section className="section" aria-labelledby="home-services-title">
-      <div className="container">
+    <section
+      className="bg-white py-[clamp(4.5rem,8vw,7rem)]"
+      aria-labelledby="home-services-title"
+    >
+      <div className="mx-auto w-[min(1240px,calc(100%-2rem))] md:w-[min(1240px,calc(100%-3.5rem))]">
+        {/* Header — left stacked exactly like Bluewake */}
         <Reveal>
-          <div className="section-head flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-            <div className="max-w-2xl">
-              <p className="eyebrow eyebrow-caps !mb-4">{eyebrow}</p>
-              <h2
-                id="home-services-title"
-                className="max-w-[18ch] text-[clamp(2.2rem,4.4vw,3.75rem)] leading-[1.02] tracking-[-0.04em] text-ink"
-              >
-                {title}
-              </h2>
-            </div>
-            <Link
-              href={localePath(locale, "/services")}
-              className="link-arrow shrink-0 self-start text-[1.02rem] md:self-auto md:pb-1"
+          <div className="max-w-[34rem]">
+            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-ink">
+              {eyebrow}
+            </p>
+            <h2
+              id="home-services-title"
+              className="mt-4 font-display text-[clamp(2.5rem,5vw,3.75rem)] font-medium leading-[1.05] tracking-[-0.035em] text-ink"
             >
-              {viewAll}
-              <span aria-hidden="true">→</span>
-            </Link>
+              {title}
+            </h2>
+            <Button
+              asChild
+              className="mt-8 h-11 rounded-full bg-black px-7 text-[0.92rem] font-semibold text-white hover:bg-black/90"
+            >
+              <Link href={localePath(locale, "/services")}>{viewAll}</Link>
+            </Button>
           </div>
         </Reveal>
 
-        <div className="grid gap-6 md:grid-cols-2 md:gap-7 lg:gap-8">
-          {cards.map((card, i) => {
-            const index = String(i + 1).padStart(2, "0");
-            return (
-              <Reveal key={card.id} delay={i * 90} variant={i % 2 === 0 ? "left" : "right"}>
-                <Link
-                  href={localePath(locale, card.href)}
-                  className="fleet-card group flex h-full flex-col focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)] md:min-h-[340px] md:flex-row"
-                >
-                  <div className="media-frame relative aspect-[5/4] overflow-hidden md:aspect-auto md:w-[44%] md:shrink-0 md:self-stretch">
-                    <Image
-                      src={card.image}
-                      alt=""
-                      fill
-                      className="media-zoom object-cover"
-                      sizes="(max-width:768px) 100vw, 28vw"
-                    />
+        {/* 3 cards / row · 4th on next row */}
+        <div className="mt-10 grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 lg:mt-12 lg:grid-cols-3 lg:gap-8">
+          {cards.map((card, i) => (
+            <Reveal key={card.id} delay={i * 60} className="flex h-full">
+              <article className="flex h-full w-full flex-col overflow-hidden rounded-[8px] bg-[#f2f2f2]">
+                {/* Image flush — no top / left / right spacing */}
+                <div className="group relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-[#eaeaea]">
+                  <Image
+                    src={card.image}
+                    alt=""
+                    fill
+                    className="object-cover object-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
+                    sizes="(max-width:640px) 100vw, (max-width:1024px) 45vw, 380px"
+                  />
+                </div>
+
+                {/* Content keeps side + bottom padding */}
+                <div className="flex flex-1 flex-col px-6 pb-6 pt-6 md:px-8 md:pb-8 md:pt-7">
+                  <h3 className="shrink-0 font-display text-[1.55rem] font-medium leading-tight tracking-[-0.03em] text-ink md:text-[1.7rem]">
+                    {card.title}
+                  </h3>
+
+                  <div className="mt-3 flex shrink-0 flex-wrap gap-2 md:mt-3.5">
+                    {card.specs.map((spec) => (
+                      <Badge
+                        key={`${spec.label}-${spec.value}`}
+                        className="h-7 rounded-full border-0 bg-[#e4e4e4] px-3 text-[0.74rem] font-medium text-[#333] hover:bg-[#e4e4e4]"
+                      >
+                        {spec.value}
+                      </Badge>
+                    ))}
                   </div>
 
-                  <div className="flex flex-1 flex-col p-7 md:p-8 lg:p-9">
-                    <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-muted">
-                      {index}
-                    </p>
-                    <h3 className="mt-3 font-display text-[1.65rem] leading-[1.1] tracking-[-0.03em] text-ink md:text-[1.85rem]">
-                      {card.title}
-                    </h3>
-                    <p className="mt-3 flex-1 text-[0.95rem] leading-relaxed text-muted">
-                      {card.description}
-                    </p>
+                  <p className="mt-4 shrink-0 text-[0.95rem] leading-[1.65] text-[#666] md:mt-5">
+                    {card.description}
+                  </p>
 
-                    <dl className="fleet-specs mt-8 space-y-3.5 border-t border-[var(--line)] pt-6">
-                      {card.specs.map((spec) => (
-                        <div
-                          key={spec.label}
-                          className="flex items-baseline justify-between gap-6"
-                        >
-                          <dt className="shrink-0 text-[0.68rem] uppercase tracking-[0.14em] text-muted">
-                            {spec.label}
-                          </dt>
-                          <dd className="text-right font-display text-[1.05rem] leading-none tracking-[-0.02em] text-ink md:text-[1.125rem]">
-                            {spec.value}
-                          </dd>
-                        </div>
-                      ))}
-                    </dl>
-
-                    <span className="link-arrow mt-7 text-[0.95rem]">
-                      {learnMore}
-                      <span aria-hidden="true">→</span>
-                    </span>
+                  <div className="mt-auto pt-8">
+                    <Button
+                      asChild
+                      className="h-10 rounded-full border border-transparent bg-black px-5 text-[0.875rem] font-semibold text-white transition-[background-color,color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-black hover:bg-[#f4f4f4] hover:text-black hover:shadow-none"
+                    >
+                      <Link href={localePath(locale, card.href)}>{learnMore}</Link>
+                    </Button>
                   </div>
-                </Link>
-              </Reveal>
-            );
-          })}
+                </div>
+              </article>
+            </Reveal>
+          ))}
         </div>
       </div>
     </section>
@@ -157,6 +122,11 @@ type FeatureRowProps = {
   founderImage?: string;
 };
 
+/**
+ * Bluewake Founder section pattern:
+ * left — eyebrow, title, body, vertical feature list with hairline dividers
+ * right — full-bleed portrait with name/role + quote overlay
+ */
 export function FeatureRow({
   eyebrow,
   title,
@@ -168,60 +138,111 @@ export function FeatureRow({
   founderImage,
 }: FeatureRowProps) {
   const showFounder = Boolean(founderQuote && founderName);
+  // Bluewake shows 3 value rows beside the founder panel
+  const list = showFounder ? features.slice(0, 3) : features;
 
   return (
-    <section className="section">
-      <div className="container">
+    <section className="bg-white py-[clamp(4.5rem,8vw,7rem)]">
+      <div className="mx-auto w-[min(1240px,calc(100%-2rem))] md:w-[min(1240px,calc(100%-3.5rem))]">
         <div
-          className={`grid items-start gap-12 lg:gap-16 ${
-            showFounder ? "lg:grid-cols-[1.05fr_0.95fr]" : ""
+          className={`grid items-stretch gap-12 lg:gap-16 xl:gap-20 ${
+            showFounder ? "lg:grid-cols-[1fr_1.05fr]" : ""
           }`}
         >
-          <div>
+          {/* Left column */}
+          <div className="flex flex-col justify-center">
             <Reveal variant="left">
-              <p className="eyebrow">{eyebrow}</p>
-              <h2 className="max-w-xl text-[clamp(2.1rem,4.2vw,3.6rem)] text-ink">{title}</h2>
-              {body && <p className="mt-5 max-w-xl text-muted md:text-lg">{body}</p>}
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-ink">
+                {eyebrow}
+              </p>
+              <h2 className="mt-4 max-w-[18ch] font-display text-[clamp(1.85rem,3.2vw,2.65rem)] font-medium leading-[1.12] tracking-[-0.03em] text-ink">
+                {title}
+              </h2>
+              {body && (
+                <p className="mt-5 max-w-md text-[1.05rem] leading-relaxed text-[#666] md:mt-6 md:text-lg">
+                  {body}
+                </p>
+              )}
             </Reveal>
-            <div
-              className={`mt-10 grid gap-8 sm:grid-cols-2 md:mt-12 ${
-                showFounder ? "" : "lg:grid-cols-4"
-              }`}
-            >
-              {features.map((feature, i) => (
-                <Reveal key={feature.title} delay={80 + i * 70}>
-                  <div className="flex gap-4">
-                    <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sand text-ink">
-                      {featureIcons[i]}
-                    </div>
-                    <div>
-                      <h3 className="font-display text-xl text-ink">{feature.title}</h3>
-                      <p className="mt-2 text-sm leading-relaxed text-muted">{feature.description}</p>
-                    </div>
+
+            {/* Vertical feature list + hairline dividers (Bluewake) */}
+            <ul className="mt-10 md:mt-12">
+              {list.map((feature, i) => (
+                <Reveal key={feature.title} delay={80 + i * 70} as="li">
+                  <div
+                    className={`border-t border-[#e5e5e5] py-6 ${
+                      i === list.length - 1 ? "border-b" : ""
+                    }`}
+                  >
+                    <h3 className="font-display text-[1.25rem] font-medium tracking-[-0.02em] text-ink md:text-[1.35rem]">
+                      {feature.title}
+                    </h3>
+                    <p className="mt-2 max-w-md text-[0.95rem] leading-relaxed text-[#666]">
+                      {feature.description}
+                    </p>
                   </div>
                 </Reveal>
               ))}
-            </div>
+            </ul>
           </div>
 
+          {/* Right — full-bleed founder panel */}
           {showFounder && (
-            <Reveal variant="scale" delay={140}>
-              <div className="overflow-hidden rounded-[var(--radius-panel)] bg-sand shadow-[var(--shadow-md)]">
-                <div className="media-frame relative aspect-[5/4]">
-                  <Image
-                    src={founderImage || media.craftsman}
-                    alt={founderName || ""}
-                    fill
-                    className="media-zoom object-cover object-top"
-                    sizes="(max-width:1024px) 100vw, 45vw"
-                  />
-                </div>
-                <div className="p-8 md:p-10">
-                  <blockquote className="font-display text-[clamp(1.3rem,2.5vw,1.85rem)] leading-snug text-ink">
+            <Reveal variant="scale" delay={120} className="h-full min-h-[480px] lg:min-h-0">
+              <div className="group relative h-full min-h-[520px] overflow-hidden rounded-[8px] lg:min-h-full">
+                <Image
+                  src={founderImage || media.craftsman}
+                  alt={founderName || ""}
+                  fill
+                  className="object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
+                  sizes="(max-width:1024px) 100vw, 50vw"
+                />
+                {/* Bluewake-style left scrim for white type */}
+                <div
+                  className="absolute inset-0 bg-gradient-to-r from-[#0a1628]/88 via-[#0a1628]/45 to-transparent"
+                  aria-hidden="true"
+                />
+                <div
+                  className="absolute inset-0 bg-gradient-to-t from-[#0a1628]/75 via-transparent to-[#0a1628]/25"
+                  aria-hidden="true"
+                />
+
+                <div className="absolute inset-0 flex flex-col justify-between p-7 text-white md:p-9 lg:p-10">
+                  <div>
+                    <p className="font-display text-[1.65rem] font-medium tracking-[-0.03em] md:text-[1.85rem]">
+                      {founderName}
+                    </p>
+                    {founderRole && (
+                      <p className="mt-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-white/70">
+                        {founderRole}
+                      </p>
+                    )}
+                    {/* Signature-style accent */}
+                    <svg
+                      className="mt-5 h-8 w-28 text-white/90"
+                      viewBox="0 0 120 32"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M4 22c12-14 28-18 42-10 8 4.5 14 8 22 7 10-1 18-8 28-12 6-2.5 14-4 20-2"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M18 26c8-3 16-2 22 1"
+                        stroke="currentColor"
+                        strokeWidth="1.2"
+                        strokeLinecap="round"
+                        opacity="0.7"
+                      />
+                    </svg>
+                  </div>
+
+                  <blockquote className="max-w-[28ch] font-display text-[clamp(1.25rem,2.4vw,1.75rem)] font-medium leading-[1.35] tracking-[-0.02em] text-white">
                     “{founderQuote}”
                   </blockquote>
-                  <p className="mt-7 font-semibold text-ink">{founderName}</p>
-                  {founderRole && <p className="text-sm text-muted">{founderRole}</p>}
                 </div>
               </div>
             </Reveal>

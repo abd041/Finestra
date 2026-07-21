@@ -1,15 +1,10 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-  type PointerEvent as ReactPointerEvent,
-} from "react";
+import Image from "next/image";
+import { useEffect, useId, useRef, useState } from "react";
 import type { Testimonial } from "@/content/types";
-import { Reveal } from "./Reveal";
+import { media } from "@/lib/media";
+import { cn } from "@/lib/utils";
 
 type Props = {
   eyebrow: string;
@@ -20,347 +15,234 @@ type Props = {
   showLabel: string;
 };
 
-const AUTOPLAY_MS = 6000;
+function initials(name: string) {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("");
+}
 
-export function Testimonials({
-  eyebrow,
-  title,
-  body,
-  items,
-  groupLabel,
-  showLabel,
-}: Props) {
+function Stars() {
+  return (
+    <div className="flex gap-1" aria-hidden="true">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <svg
+          key={i}
+          viewBox="0 0 20 20"
+          className="h-3.5 w-3.5 fill-current text-[#111] md:h-4 md:w-4"
+        >
+          <path d="M10 1.5l2.35 4.76 5.25.76-3.8 3.7.9 5.24L10 13.77l-4.7 2.47.9-5.24-3.8-3.7 5.25-.76L10 1.5z" />
+        </svg>
+      ))}
+    </div>
+  );
+}
+
+function TestimonialCard({
+  item,
+  className,
+  featured,
+}: {
+  item: Testimonial;
+  className?: string;
+  featured?: boolean;
+}) {
+  return (
+    <article
+      className={cn(
+        "flex h-[300px] w-[220px] flex-col rounded-2xl border-0 bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.12)] sm:h-[360px] sm:w-[300px] sm:p-7 md:h-[400px] md:w-[340px] md:p-8",
+        featured &&
+          "z-[2] sm:h-[380px] sm:w-[320px] md:h-[420px] md:w-[360px] shadow-[0_28px_70px_rgba(15,23,42,0.16)]",
+        className
+      )}
+    >
+      <Stars />
+      <p className="mt-5 flex-1 text-[0.92rem] leading-[1.7] text-[#374151] md:text-[0.98rem] md:leading-[1.75]">
+        {item.quote}
+      </p>
+      <div className="mt-6 flex items-center gap-3">
+        <div
+          className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#e8e8e8] font-display text-[0.8rem] text-[#111]"
+          aria-hidden="true"
+        >
+          {initials(item.name)}
+        </div>
+        <div className="min-w-0 text-left">
+          <p className="truncate text-[0.95rem] font-semibold text-[#111]">
+            {item.name}
+          </p>
+          <p className="mt-0.5 truncate text-[0.8rem] text-[#9ca3af]">
+            {item.role}
+          </p>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function easeInOutCubic(t: number) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+/**
+ * Cards fan while the stage is on-screen. Page keeps scrolling —
+ * progress is mapped to the card stage center, not the section top
+ * (so the open happens when you can actually see it).
+ */
+export function Testimonials({ eyebrow, title, items }: Props) {
   const titleId = useId();
-  const viewportRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const reduceMotion = useRef(false);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const leftRef = useRef<HTMLDivElement>(null);
+  const rightRef = useRef<HTMLDivElement>(null);
+  const centerRef = useRef<HTMLDivElement>(null);
+  const [ready, setReady] = useState(false);
 
-  const count = items.length;
-  /* Triple list so we can loop seamlessly through the middle set */
-  const slides = count > 0 ? [...items, ...items, ...items] : [];
-  const middleStart = count;
-
-  const [index, setIndex] = useState(middleStart);
-  const [offset, setOffset] = useState(0);
-  const [animate, setAnimate] = useState(true);
-  const [paused, setPaused] = useState(false);
-  const [dragging, setDragging] = useState(false);
-  const [progress, setProgress] = useState(0);
-
-  const drag = useRef({
-    active: false,
-    startX: 0,
-    startOffset: 0,
-    delta: 0,
-    pointerId: -1,
-  });
-
-  const measure = useCallback(() => {
-    const viewport = viewportRef.current;
-    const track = trackRef.current;
-    if (!viewport || !track) return { card: 0, gap: 24 };
-    const cardEl = track.children[0] as HTMLElement | undefined;
-    if (!cardEl) return { card: 0, gap: 24 };
-    const styles = getComputedStyle(track);
-    const gap = parseFloat(styles.columnGap || styles.gap || "24") || 24;
-    return { card: cardEl.getBoundingClientRect().width, gap };
-  }, []);
-
-  const offsetForIndex = useCallback(
-    (i: number) => {
-      const { card, gap } = measure();
-      const viewport = viewportRef.current;
-      if (!viewport || !card) return 0;
-      /* Center the active card in the viewport */
-      const viewportW = viewport.clientWidth;
-      return -(i * (card + gap) - (viewportW - card) / 2);
-    },
-    [measure]
-  );
-
-  const jumpTo = useCallback((i: number, withAnimation: boolean) => {
-    setAnimate(withAnimation);
-    setIndex(i);
-  }, []);
-
-  const normalizeLoop = useCallback(
-    (i: number) => {
-      if (count === 0) return i;
-      if (i < count || i >= count * 2) {
-        const normalized = count + (((i % count) + count) % count);
-        requestAnimationFrame(() => {
-          setAnimate(false);
-          setIndex(normalized);
-        });
-        return normalized;
-      }
-      return i;
-    },
-    [count]
-  );
-
-  const goToLogical = useCallback(
-    (logical: number) => {
-      const target = middleStart + (((logical % count) + count) % count);
-      jumpTo(target, !reduceMotion.current);
-      setProgress(0);
-    },
-    [count, jumpTo, middleStart]
-  );
-
-  const step = useCallback((dir: number) => {
-    setAnimate(!reduceMotion.current);
-    setProgress(0);
-    setIndex((current) => current + dir);
-  }, []);
-
-  /* Keep transform aligned on resize + first paint */
-  useEffect(() => {
-    reduceMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const sync = () => {
-      setAnimate(false);
-      setOffset(offsetForIndex(index));
-    };
-    sync();
-    window.addEventListener("resize", sync);
-    return () => window.removeEventListener("resize", sync);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only rebind resize; index sync via jump/step
-  }, [offsetForIndex]);
+  const trio = items.slice(0, 3);
+  const left = trio[0];
+  const center = trio[1] ?? trio[0];
+  const right = trio[2] ?? trio[0];
 
   useEffect(() => {
-    if (dragging) return;
-    const id = requestAnimationFrame(() => setOffset(offsetForIndex(index)));
-    return () => cancelAnimationFrame(id);
-  }, [index, offsetForIndex, dragging]);
+    const stage = stageRef.current;
+    if (!stage) return;
 
-  /* After animated slide, normalize infinite loop */
-  useEffect(() => {
-    if (!animate) return;
-    const track = trackRef.current;
-    if (!track) return;
-    const onEnd = (e: TransitionEvent) => {
-      if (e.propertyName !== "transform") return;
-      normalizeLoop(index);
-    };
-    track.addEventListener("transitionend", onEnd);
-    return () => track.removeEventListener("transitionend", onEnd);
-  }, [animate, index, normalizeLoop]);
-
-  /* Autoplay + progress */
-  useEffect(() => {
-    if (paused || dragging || reduceMotion.current || count < 2) {
-      return;
-    }
-    const started = performance.now();
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let raf = 0;
-    const tick = (now: number) => {
-      const elapsed = now - started;
-      const p = Math.min(1, elapsed / AUTOPLAY_MS);
-      setProgress(p);
-      if (p >= 1) {
-        step(1);
+    let running = true;
+    let current = reduce ? 1 : 0;
+    let target = current;
+    let spreadMax = 360;
+
+    const apply = (t: number) => {
+      const leftX = -t * spreadMax;
+      const rightX = t * spreadMax;
+      const rot = t * 7;
+      const sideScale = 0.96 + t * 0.04;
+      const sideY = t * 20;
+      const centerY = -t * 10;
+
+      if (leftRef.current) {
+        leftRef.current.style.transform = `translate3d(${leftX}px, ${sideY}px, 0) rotate(${-rot}deg) scale(${sideScale})`;
+      }
+      if (rightRef.current) {
+        rightRef.current.style.transform = `translate3d(${rightX}px, ${sideY}px, 0) rotate(${rot}deg) scale(${sideScale})`;
+      }
+      if (centerRef.current) {
+        centerRef.current.style.transform = `translate3d(0, ${centerY}px, 0) scale(${1 + t * 0.015})`;
+      }
+    };
+
+    const readTarget = () => {
+      spreadMax =
+        window.innerWidth < 640 ? 180 : window.innerWidth < 1024 ? 280 : 360;
+
+      if (reduce) {
+        target = 1;
         return;
       }
+
+      const rect = stage.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      const mid = rect.top + rect.height * 0.5;
+
+      // Stacked when cards sit near the bottom of the viewport;
+      // fully open when their center reaches ~45% from the top.
+      const start = vh * 0.88;
+      const end = vh * 0.42;
+      const raw = (start - mid) / Math.max(1, start - end);
+      target = easeInOutCubic(Math.min(1, Math.max(0, raw)));
+    };
+
+    const tick = () => {
+      if (!running) return;
+      readTarget();
+      // Soft follow so the fan eases instead of snapping to scroll
+      current += (target - current) * 0.065;
+      if (Math.abs(target - current) < 0.00035) current = target;
+      apply(current);
       raf = requestAnimationFrame(tick);
     };
+
+    apply(current);
+    setReady(true);
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [paused, dragging, count, index, step]);
 
-  const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (e.button !== 0 && e.pointerType === "mouse") return;
-    drag.current = {
-      active: true,
-      startX: e.clientX,
-      startOffset: offset,
-      delta: 0,
-      pointerId: e.pointerId,
+    return () => {
+      running = false;
+      cancelAnimationFrame(raf);
     };
-    setDragging(true);
-    setAnimate(false);
-    setPaused(true);
-    e.currentTarget.setPointerCapture(e.pointerId);
-  };
+  }, []);
 
-  const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (!drag.current.active) return;
-    const delta = e.clientX - drag.current.startX;
-    drag.current.delta = delta;
-    setOffset(drag.current.startOffset + delta);
-  };
-
-  const onPointerUp = () => {
-    if (!drag.current.active) return;
-    const { delta } = drag.current;
-    drag.current.active = false;
-    setDragging(false);
-    setPaused(false);
-    setAnimate(!reduceMotion.current);
-
-    const { card } = measure();
-    const threshold = Math.min(120, card * 0.22);
-    if (delta > threshold) step(-1);
-    else if (delta < -threshold) step(1);
-    else {
-      setAnimate(!reduceMotion.current);
-      setOffset(offsetForIndex(index));
-    }
-    setProgress(0);
-  };
-
-  const logicalIndex = count ? ((index % count) + count) % count : 0;
+  if (!center) return null;
 
   return (
     <section
-      className="section surface-sand overflow-hidden"
+      className="relative overflow-x-clip py-20 md:py-28"
       aria-labelledby={titleId}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => {
-        if (!dragging) setPaused(false);
-      }}
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={() => setPaused(false)}
     >
-      <div className="container">
-        <Reveal variant="left">
-          <div className="section-head flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-            <div className="max-w-2xl">
-              <p className="eyebrow eyebrow-caps !mb-4">{eyebrow}</p>
-              <h2
-                id={titleId}
-                className="text-[clamp(2.2rem,4.4vw,3.6rem)] leading-[1.05] tracking-[-0.04em] text-ink"
-              >
-                {title}
-              </h2>
-              {body && (
-                <p className="mt-5 max-w-lg text-[1.05rem] leading-relaxed text-muted md:text-lg">
-                  {body}
-                </p>
-              )}
-            </div>
-            <div className="flex items-center gap-3" role="group" aria-label={groupLabel}>
-              <button
-                type="button"
-                aria-label={`${showLabel} previous`}
-                onClick={() => step(-1)}
-                className="testimonial-nav flex h-12 w-12 items-center justify-center rounded-full border border-[var(--line)] bg-white text-ink md:h-14 md:w-14"
-              >
-                <span aria-hidden="true">←</span>
-              </button>
-              <button
-                type="button"
-                aria-label={`${showLabel} next`}
-                onClick={() => step(1)}
-                className="testimonial-nav flex h-12 w-12 items-center justify-center rounded-full border border-[var(--line)] bg-white text-ink md:h-14 md:w-14"
-              >
-                <span aria-hidden="true">→</span>
-              </button>
-            </div>
-          </div>
-        </Reveal>
-      </div>
-
-      <div className="relative">
-        {/* Soft edge fades */}
-        <div
-          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-[var(--sand)] to-transparent md:w-20 lg:w-28"
-          aria-hidden="true"
-        />
-        <div
-          className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-[var(--sand)] to-transparent md:w-20 lg:w-28"
-          aria-hidden="true"
-        />
-
-        <div
-          ref={viewportRef}
-          className="testimonial-viewport cursor-grab touch-pan-y active:cursor-grabbing"
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={onPointerUp}
-        >
-          <div
-            ref={trackRef}
-            className={`testimonial-track flex gap-5 md:gap-6 ${
-              animate && !dragging ? "testimonial-track-animate" : ""
-            }`}
-            style={{ transform: `translate3d(${offset}px, 0, 0)` }}
-            aria-live="polite"
-          >
-            {slides.map((item, i) => {
-              const isActive = i === index;
-              const initials = item.name
-                .split(" ")
-                .map((n) => n[0])
-                .filter(Boolean)
-                .slice(0, 2)
-                .join("");
-
-              return (
-                <article
-                  key={`${item.name}-${i}`}
-                  className={`testimonial-card flex w-[min(82vw,400px)] shrink-0 flex-col rounded-[var(--radius-panel)] bg-white p-8 md:w-[440px] md:p-10 lg:w-[460px] lg:p-11 ${
-                    isActive ? "testimonial-card-active" : "testimonial-card-idle"
-                  }`}
-                  aria-hidden={!isActive}
-                >
-                  <span
-                    className="font-display text-5xl leading-none text-ink/[0.1] md:text-6xl"
-                    aria-hidden="true"
-                  >
-                    “
-                  </span>
-                  <h3 className="mt-4 font-display text-[clamp(1.55rem,2.5vw,1.95rem)] leading-snug tracking-[-0.03em] text-ink">
-                    {item.title}
-                  </h3>
-                  <p className="mt-5 flex-1 text-[0.98rem] leading-relaxed text-muted md:text-[1.05rem] md:leading-[1.75]">
-                    {item.quote}
-                  </p>
-                  <div className="mt-10 flex items-center gap-4 border-t border-[var(--line)] pt-6">
-                    <div
-                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-sand font-display text-sm text-ink"
-                      aria-hidden="true"
-                    >
-                      {initials}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-ink">{item.name}</p>
-                      <p className="mt-0.5 text-sm text-muted">{item.role}</p>
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute inset-0 bg-white" />
+        <div className="absolute inset-x-0 bottom-0 h-[55%] overflow-hidden">
+          <Image
+            src={media.banners.projects}
+            alt=""
+            fill
+            className="object-cover object-[center_60%] opacity-70"
+            sizes="100vw"
+            quality={70}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1a2330]/35 via-[#1a2330]/10 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white via-white/80 to-transparent" />
         </div>
       </div>
 
-      <div className="container">
-        <div className="mt-8 flex flex-col items-center gap-4 md:mt-10">
-          <div className="flex items-center gap-2.5">
-            {items.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                aria-label={`${showLabel} ${i + 1}`}
-                aria-current={i === logicalIndex ? "true" : undefined}
-                onClick={() => goToLogical(i)}
-                className={`relative h-2 overflow-hidden rounded-full transition-all duration-300 ${
-                  i === logicalIndex ? "w-11 bg-ink/15" : "w-2 bg-ink/20 hover:bg-ink/40"
-                }`}
-              >
-                {i === logicalIndex && (
-                  <span
-                    className="absolute inset-y-0 left-0 rounded-full bg-ink"
-                    style={{ width: `${Math.max(8, progress * 100)}%` }}
-                  />
-                )}
-              </button>
-            ))}
+      <div className="relative mx-auto w-[min(900px,calc(100%-2rem))] text-center">
+        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#111]">
+          {eyebrow}
+        </p>
+        <h2
+          id={titleId}
+          className="mx-auto mt-3 max-w-[22ch] font-display text-[clamp(1.75rem,3.4vw,2.75rem)] font-medium leading-[1.15] tracking-[-0.03em] text-[#111]"
+        >
+          {title}
+        </h2>
+      </div>
+
+      <div
+        ref={stageRef}
+        className={cn(
+          "relative mx-auto mt-12 flex h-[440px] w-full max-w-[1200px] items-center justify-center transition-opacity duration-500 md:mt-14 md:h-[480px]",
+          ready ? "opacity-100" : "opacity-0"
+        )}
+      >
+        {left && (
+          <div
+            ref={leftRef}
+            className="absolute z-[1] will-change-transform"
+            style={{ transform: "translate3d(0,0,0)" }}
+          >
+            <TestimonialCard item={left} />
           </div>
-          <p className="text-[0.7rem] font-medium uppercase tracking-[0.16em] text-muted">
-            {String(logicalIndex + 1).padStart(2, "0")} / {String(count).padStart(2, "0")}
-          </p>
+        )}
+
+        {right && (
+          <div
+            ref={rightRef}
+            className="absolute z-[1] will-change-transform"
+            style={{ transform: "translate3d(0,0,0)" }}
+          >
+            <TestimonialCard item={right} />
+          </div>
+        )}
+
+        <div
+          ref={centerRef}
+          className="relative z-[2] will-change-transform"
+          style={{ transform: "translate3d(0,0,0)" }}
+        >
+          <TestimonialCard item={center} featured />
         </div>
       </div>
     </section>

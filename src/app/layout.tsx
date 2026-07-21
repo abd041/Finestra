@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Figtree, Outfit } from "next/font/google";
 import { siteConfig } from "@/lib/media";
+import { cn } from "@/lib/utils";
 import "./globals.css";
 
 const figtree = Figtree({
@@ -36,7 +37,7 @@ export default function RootLayout({
   return (
     <html
       lang="nl"
-      className={`no-js ${figtree.variable} ${outfit.variable} h-full`}
+      className={cn("no-js h-full font-sans", figtree.variable, outfit.variable)}
       suppressHydrationWarning
     >
       <head>

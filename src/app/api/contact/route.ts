@@ -42,6 +42,7 @@ export async function POST(request: Request) {
     const email = String(body.email || "").trim();
     const message = String(body.message || "").trim();
     const phone = body.phone ? String(body.phone).trim() : undefined;
+    const vessel = body.vessel ? String(body.vessel).trim() : undefined;
     const service = body.service ? String(body.service).trim() : undefined;
     const locale = body.locale ? String(body.locale).trim() : undefined;
 
@@ -53,7 +54,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid email" }, { status: 400 });
     }
 
-    await sendContactEmail({ name, email, phone, service, message, locale });
+    await sendContactEmail({ name, email, phone, vessel, service, message, locale });
     return NextResponse.json({ ok: true });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Server error";

@@ -4,7 +4,7 @@ import type { Locale } from "@/content";
 import { localePath } from "@/lib/i18n";
 import { media } from "@/lib/media";
 import { Reveal } from "@/components/shared/Reveal";
-import { ParallaxMedia } from "@/components/shared/ParallaxMedia";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   locale: Locale;
@@ -53,41 +53,34 @@ export function IntroSplit({
 
           <Reveal variant="left" delay={160}>
             <div className="mt-8 max-w-xl border-l-2 border-ink/10 pl-5 md:pl-6">
-              <p className="text-[0.95rem] leading-relaxed text-muted md:text-[1rem] md:leading-[1.75]">
+              <p className="text-[0.95rem] leading-relaxed text-muted-foreground md:text-[1rem] md:leading-[1.75]">
                 {bodySecondary}
               </p>
             </div>
           </Reveal>
 
           <Reveal variant="left" delay={230}>
-            <Link
-              href={localePath(locale, "/about")}
-              className="link-arrow mt-10 inline-flex text-[1.02rem]"
-            >
-              {linkLabel}
-              <span aria-hidden="true">→</span>
-            </Link>
+            <Button variant="link" asChild className="mt-10 h-auto px-0 text-[1.02rem]">
+              <Link href={localePath(locale, "/about")}>
+                {linkLabel}
+                <span aria-hidden="true">→</span>
+              </Link>
+            </Button>
           </Reveal>
         </div>
 
         <Reveal variant="scale" delay={120} className="order-1 lg:order-2">
-          <div className="relative mx-auto w-full max-w-[520px] lg:mx-0 lg:max-w-none">
-            <div
-              className="pointer-events-none absolute -inset-3 rounded-[calc(var(--radius-panel)+0.75rem)] border border-[var(--line)] md:-inset-4"
-              aria-hidden="true"
-            />
-            <div className="group relative aspect-[4/5] overflow-hidden rounded-[var(--radius-panel)] bg-white shadow-[var(--shadow-lg)] md:aspect-[5/6]">
-              <ParallaxMedia className="absolute inset-0" intensity={0.055}>
-                <Image
-                  src={media.patrick}
-                  alt={imageAlt}
-                  fill
-                  className="media-zoom object-cover object-top"
-                  sizes="(max-width:1024px) 100vw, 42vw"
-                />
-              </ParallaxMedia>
+          <div className="relative mx-auto w-full max-w-[520px] overflow-hidden rounded-[8px] bg-white shadow-[var(--shadow-lg)] lg:mx-0 lg:max-w-none">
+            <div className="group relative aspect-[4/5] overflow-hidden md:aspect-[5/6]">
+              <Image
+                src={media.patrick}
+                alt={imageAlt}
+                fill
+                className="object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
+                sizes="(max-width:1024px) 100vw, 42vw"
+              />
             </div>
-            <div className="absolute inset-x-5 bottom-5 z-10 rounded-2xl border border-white/15 bg-navy/88 px-6 py-5 text-white shadow-[var(--shadow-md)] backdrop-blur-sm md:inset-x-7 md:bottom-7 md:px-7 md:py-6">
+            <div className="bg-navy px-6 py-5 text-white md:px-7 md:py-6">
               <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/55">
                 {founderTitle}
               </p>

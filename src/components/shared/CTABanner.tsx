@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "./Reveal";
 import { media, siteConfig } from "@/lib/media";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   eyebrow?: string;
@@ -15,6 +16,10 @@ type Props = {
   imageAlt?: string;
 };
 
+/**
+ * Bluewake "Ready to make waves" CTA — full-bleed image,
+ * centered white copy, white pill button.
+ */
 export function CTABanner({
   eyebrow,
   title,
@@ -27,79 +32,86 @@ export function CTABanner({
   imageAlt = "Crystal-clear restored yacht glass",
 }: Props) {
   return (
-    <section className="section" aria-labelledby="cta-banner-title">
-      <div className="container">
-        <div className="relative overflow-hidden rounded-[var(--radius-panel)] shadow-[var(--shadow-lg)] lg:grid lg:grid-cols-[1.05fr_0.95fr]">
-          <Reveal variant="scale" className="relative min-h-[280px] surface-dark sm:min-h-[340px] lg:min-h-[480px]">
-            <div className="media-frame absolute inset-0 overflow-hidden">
-              <Image
-                src={image}
-                alt={imageAlt}
-                fill
-                className="cta-kenburns object-cover"
-                sizes="(max-width:1024px) 100vw, 55vw"
-                quality={85}
-              />
-            </div>
-            <div className="absolute inset-0 bg-gradient-to-r from-navy/20 via-transparent to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy/55 via-transparent to-transparent" />
-          </Reveal>
+    <section
+      className="relative isolate overflow-hidden"
+      aria-labelledby="cta-banner-title"
+    >
+      <div className="absolute inset-0">
+        <Image
+          src={image}
+          alt={imageAlt}
+          fill
+          className="object-cover object-center"
+          sizes="100vw"
+          quality={85}
+        />
+        <div
+          className="absolute inset-0 bg-[#070d14]/30"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute inset-0 bg-gradient-to-t from-[#070d14]/45 via-[#070d14]/10 to-[#070d14]/20"
+          aria-hidden="true"
+        />
+      </div>
 
-          <Reveal variant="right" delay={120}>
-            <div className="relative flex h-full flex-col justify-center bg-white px-8 py-12 md:px-12 md:py-16 lg:px-14 lg:py-20">
-              {eyebrow && <p className="eyebrow eyebrow-caps !mb-4">{eyebrow}</p>}
-              <h2
-                id="cta-banner-title"
-                className="max-w-[14ch] text-[clamp(2.15rem,3.8vw,3.35rem)] leading-[1.05] tracking-[-0.04em] text-ink"
+      <div className="relative z-10 mx-auto flex min-h-[min(85vh,780px)] w-[min(920px,calc(100%-2rem))] flex-col items-center justify-center py-28 text-center md:py-36 lg:min-h-[680px] lg:py-40">
+        <Reveal className="flex w-full flex-col items-center">
+          {eyebrow && (
+            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/90 [text-shadow:0_1px_12px_rgba(0,0,0,0.35)]">
+              {eyebrow}
+            </p>
+          )}
+          <h2
+            id="cta-banner-title"
+            className="mt-5 max-w-[18ch] font-display text-[clamp(2rem,4.5vw,3.35rem)] font-medium leading-[1.1] tracking-[-0.035em] text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.35)]"
+          >
+            {title}
+          </h2>
+          {body && (
+            <p className="mt-5 max-w-xl text-[1.02rem] leading-relaxed text-white/90 md:text-lg [text-shadow:0_1px_14px_rgba(0,0,0,0.35)]">
+              {body}
+            </p>
+          )}
+
+          <Button
+            asChild
+            size="lg"
+            className="mt-9 h-12 rounded-full border border-transparent bg-white px-8 text-[0.95rem] font-semibold text-black transition-[background-color,color,border-color,box-shadow] duration-300 hover:border-white hover:bg-white/10 hover:text-white hover:shadow-none"
+          >
+            <Link href={ctaHref}>{ctaLabel}</Link>
+          </Button>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-white/75">
+            {siteConfig.hasPhone && (
+              <a
+                href={siteConfig.phoneHref}
+                className="transition hover:text-white"
               >
-                {title}
-              </h2>
-              <p className="mt-6 max-w-md text-[1.05rem] leading-relaxed text-muted md:text-lg">
-                {body}
-              </p>
-
-              <div className="mt-10 flex flex-col gap-4">
-                <Link href={ctaHref} className="btn btn-dark w-full sm:w-auto sm:self-start">
-                  {ctaLabel}
-                  <span aria-hidden="true">→</span>
-                </Link>
-
-                <div className="flex flex-col gap-2.5 border-t border-[var(--line)] pt-6">
-                  {siteConfig.hasPhone && (
-                    <a
-                      href={siteConfig.phoneHref}
-                      className="group inline-flex items-baseline gap-2 text-ink transition hover:opacity-70"
-                    >
-                      <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">
-                        {phoneLabel}
-                      </span>
-                      <span className="font-display text-xl tracking-[-0.02em] md:text-2xl">
-                        {siteConfig.phoneDisplay}
-                      </span>
-                    </a>
-                  )}
-                  {siteConfig.hasWhatsapp && (
-                    <a
-                      href={siteConfig.whatsappHref}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="link-arrow text-[0.98rem]"
-                    >
-                      {whatsappLabel}
-                      <span aria-hidden="true">→</span>
-                    </a>
-                  )}
-                  <a
-                    href={`mailto:${siteConfig.email}`}
-                    className="text-sm text-muted transition hover:text-ink"
-                  >
-                    {siteConfig.email}
-                  </a>
-                </div>
-              </div>
-            </div>
-          </Reveal>
-        </div>
+                <span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-white/50">
+                  {phoneLabel}
+                </span>
+                {siteConfig.phoneDisplay}
+              </a>
+            )}
+            {siteConfig.hasWhatsapp && (
+              <a
+                href={siteConfig.whatsappHref}
+                target="_blank"
+                rel="noreferrer"
+                className="transition hover:text-white"
+              >
+                {whatsappLabel}
+              </a>
+            )}
+            <a
+              href={`mailto:${siteConfig.email}`}
+              className="transition hover:text-white"
+            >
+              {siteConfig.email}
+            </a>
+          </div>
+        </Reveal>
       </div>
     </section>
   );

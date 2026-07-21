@@ -198,8 +198,13 @@ export type Dictionary = {
     subtitle: string;
     formTitle: string;
     name: string;
+    namePlaceholder: string;
     email: string;
+    emailPlaceholder: string;
     phone: string;
+    phonePlaceholder: string;
+    vessel: string;
+    vesselPlaceholder: string;
     service: string;
     servicePlaceholder: string;
     message: string;
@@ -210,6 +215,7 @@ export type Dictionary = {
     errorNameRequired: string;
     errorEmailInvalid: string;
     errorMessageRequired: string;
+    infoEyebrow: string;
     infoTitle: string;
     infoBody: string;
     addressLabel: string;

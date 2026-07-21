@@ -53,7 +53,7 @@ export function ServiceSection({
             <dl className="mt-10 grid grid-cols-3 gap-4 border-y border-[var(--line)] py-7 md:gap-8">
               {specs.map((spec) => (
                 <div key={spec.label}>
-                  <dt className="text-[0.7rem] uppercase tracking-[0.14em] text-muted">
+                  <dt className="text-[0.7rem] uppercase tracking-[0.14em] text-muted-foreground">
                     {spec.label}
                   </dt>
                   <dd className="mt-2 font-display text-2xl text-ink md:text-3xl">
@@ -62,7 +62,7 @@ export function ServiceSection({
                 </div>
               ))}
             </dl>
-            <p className="mt-8 max-w-3xl text-muted md:text-lg">{service.description}</p>
+            <p className="mt-8 max-w-3xl text-muted-foreground md:text-lg">{service.description}</p>
           </div>
         </Reveal>
 
@@ -86,7 +86,7 @@ export function ServiceSection({
 
           <Reveal delay={100}>
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted">
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">
                 {processLabel}
               </p>
               <ul className="mt-8 space-y-0 divide-y divide-[var(--line)] border-y border-[var(--line)]">
@@ -100,7 +100,7 @@ export function ServiceSection({
                     </span>
                     <div>
                       <p className="font-display text-xl text-ink">{step.title}</p>
-                      <p className="mt-1.5 text-sm leading-relaxed text-muted">
+                      <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
                         {step.description}
                       </p>
                     </div>
@@ -109,7 +109,7 @@ export function ServiceSection({
               </ul>
 
               <div className="mt-10 rounded-[var(--radius-panel)] bg-sand px-7 py-8 md:px-8">
-                <p className="text-sm font-semibold uppercase tracking-[0.14em] text-muted">
+                <p className="text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                   {whenLabel}
                 </p>
                 <p className="mt-3 text-ink md:text-lg">{service.whenApplies}</p>

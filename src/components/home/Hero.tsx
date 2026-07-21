@@ -1,8 +1,10 @@
-import Image from "next/image";
+"use client";
+
 import Link from "next/link";
 import type { Locale } from "@/content";
 import { localePath } from "@/lib/i18n";
 import { media } from "@/lib/media";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   locale: Locale;
@@ -23,50 +25,59 @@ export function Hero({
   cta,
   pills,
   label,
-  imageAlt,
 }: Props) {
   return (
-    <section className="relative min-h-[100svh] overflow-hidden surface-dark" aria-label={label}>
-      <Image
-        src={media.hero}
-        alt={imageAlt}
-        fill
-        priority
-        sizes="100vw"
-        className="hero-kenburns object-cover object-center"
-        quality={75}
-        fetchPriority="high"
+    <section
+      className="relative min-h-[100svh] overflow-hidden bg-navy"
+      aria-label={label}
+    >
+      <video
+        className="absolute inset-0 h-full w-full object-cover"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        poster={media.hero}
+        aria-hidden="true"
+      >
+        <source src={media.heroVideo} type="video/mp4" />
+      </video>
+
+      {/* Strong left scrim so white copy stays readable over bright water/yacht */}
+      <div
+        className="absolute inset-0 bg-gradient-to-r from-[#070d14]/88 via-[#070d14]/55 to-[#070d14]/15"
+        aria-hidden="true"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#070d14]/72 via-[#070d14]/35 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#070d14]/85 via-transparent to-[#070d14]/25" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_70%,transparent_0%,rgba(7,13,20,0.35)_100%)]" />
-      <div className="hero-ambient pointer-events-none absolute inset-0" aria-hidden="true" />
-      <div className="hero-sheen pointer-events-none absolute inset-0" aria-hidden="true" />
+      <div
+        className="absolute inset-0 bg-gradient-to-t from-[#070d14]/80 via-[#070d14]/25 to-[#070d14]/45"
+        aria-hidden="true"
+      />
 
       <div className="container relative z-10 flex min-h-[100svh] items-end pb-20 pt-36 md:pb-28">
-        <div className="max-w-4xl">
+        <div className="max-w-3xl">
           <p
-            className="eyebrow !mb-5 !text-white/70 motion-safe-fade"
+            className="eyebrow eyebrow-caps !mb-5 !text-white/80 motion-safe-fade"
             style={{ animationDelay: "40ms" }}
           >
             {eyebrow}
           </p>
-          <h1 className="hero-title-mask max-w-[14ch] text-[clamp(3rem,7.5vw,6rem)] leading-[0.98] tracking-[-0.04em] text-white">
+          <h1 className="hero-title-mask max-w-[14ch] text-[clamp(2.75rem,6.8vw,5.25rem)] leading-[1.02] tracking-[-0.04em] text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.35)]">
             {title}
           </h1>
           <p
-            className="mt-7 max-w-xl text-lg text-white/78 motion-safe-fade md:text-xl"
+            className="mt-7 max-w-xl text-lg leading-relaxed text-white/90 motion-safe-fade md:text-xl [text-shadow:0_1px_12px_rgba(0,0,0,0.35)]"
             style={{ animationDelay: "280ms" }}
           >
             {subtitle}
           </p>
           <div className="mt-11 motion-safe-fade" style={{ animationDelay: "400ms" }}>
-            <Link href={localePath(locale, "/contact")} className="btn btn-primary">
-              {cta}
-            </Link>
+            <Button variant="hero" size="lg" asChild>
+              <Link href={localePath(locale, "/contact")}>{cta}</Link>
+            </Button>
           </div>
           <div
-            className="dot-row mt-11 !text-white/65 motion-safe-fade"
+            className="dot-row mt-11 !text-white/75 motion-safe-fade"
             style={{ animationDelay: "520ms" }}
           >
             {pills.map((pill) => (
@@ -74,14 +85,6 @@ export function Hero({
             ))}
           </div>
         </div>
-      </div>
-
-      <div
-        className="pointer-events-none absolute bottom-8 left-1/2 z-10 hidden -translate-x-1/2 motion-safe-fade md:block"
-        style={{ animationDelay: "700ms" }}
-        aria-hidden="true"
-      >
-        <div className="scroll-hint mx-auto" />
       </div>
     </section>
   );

@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import type { ReactNode } from "react";
+import { MapPin, Smartphone, Mail } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { CTABanner } from "@/components/shared/CTABanner";
 import { JsonLd } from "@/components/shared/JsonLd";
@@ -12,6 +15,25 @@ import { breadcrumbJsonLd, buildPageMetadata } from "@/lib/seo";
 type Props = {
   params: Promise<{ locale: string }>;
 };
+
+function ContactRow({
+  icon: Icon,
+  children,
+}: {
+  icon: LucideIcon;
+  children: ReactNode;
+}) {
+  return (
+    <li className="flex items-center gap-4">
+      <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#ececec] text-[#111]">
+        <Icon className="size-[18px]" strokeWidth={1.6} aria-hidden="true" />
+      </span>
+      <div className="min-w-0 text-[0.95rem] leading-snug text-[#111]">
+        {children}
+      </div>
+    </li>
+  );
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale: raw } = await params;
@@ -31,6 +53,23 @@ export default async function ContactPage({ params }: Props) {
   const locale = raw as Locale;
   const dict = getDictionary(locale);
   const c = dict.contactPage;
+
+  const address = [
+    siteConfig.addressLine1,
+    siteConfig.addressLine2,
+    siteConfig.country,
+  ].join(", ");
+
+  const phoneHref = siteConfig.hasPhone
+    ? siteConfig.phoneHref
+    : siteConfig.hasWhatsapp
+      ? siteConfig.whatsappHref
+      : undefined;
+  const phoneLabel = siteConfig.hasPhone
+    ? siteConfig.phoneDisplay
+    : siteConfig.hasWhatsapp
+      ? dict.common.whatsapp
+      : null;
 
   return (
     <>
@@ -52,63 +91,43 @@ export default async function ContactPage({ params }: Props) {
         pricing
       />
 
-      <section className="section">
-        <div className="container grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+      <section className="bg-white py-20 md:py-28">
+        <div className="container grid items-center gap-14 lg:grid-cols-2 lg:gap-16 xl:gap-20">
           <Reveal>
-            <div>
-              <h2 className="text-[clamp(2rem,3.5vw,3rem)] text-ink">{c.infoTitle}</h2>
-              <p className="mt-5 max-w-md text-muted md:text-lg">{c.infoBody}</p>
+            <div className="max-w-[28rem]">
+              <p className="text-[0.7rem] font-medium uppercase tracking-[0.16em] text-[#111]">
+                {c.infoEyebrow}
+              </p>
+              <h2 className="mt-5 font-display text-[clamp(2.15rem,4vw,3.35rem)] font-medium leading-[1.1] tracking-[-0.03em] text-[#111]">
+                {c.infoTitle}
+              </h2>
 
-              <div className="mt-12 divide-y divide-[var(--line)] border-y border-[var(--line)]">
-                {siteConfig.hasPhone && (
-                  <a href={siteConfig.phoneHref} className="block py-6 transition hover:opacity-70">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">
-                      {dict.common.phone}
-                    </p>
-                    <p className="mt-2 font-display text-2xl text-ink">{siteConfig.phoneDisplay}</p>
-                  </a>
+              <ul className="mt-14 space-y-5 md:mt-16">
+                <ContactRow icon={MapPin}>{address}</ContactRow>
+
+                {phoneLabel && phoneHref && (
+                  <ContactRow icon={Smartphone}>
+                    <a
+                      href={phoneHref}
+                      {...(!siteConfig.hasPhone
+                        ? { target: "_blank", rel: "noreferrer" }
+                        : {})}
+                      className="transition hover:opacity-70"
+                    >
+                      {phoneLabel}
+                    </a>
+                  </ContactRow>
                 )}
-                {siteConfig.hasWhatsapp && (
+
+                <ContactRow icon={Mail}>
                   <a
-                    href={siteConfig.whatsappHref}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="block py-6 transition hover:opacity-70"
+                    href={`mailto:${siteConfig.email}`}
+                    className="transition hover:opacity-70"
                   >
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">
-                      {dict.common.whatsapp}
-                    </p>
-                    <p className="mt-2 font-display text-2xl text-ink">
-                      {siteConfig.hasPhone ? siteConfig.phoneDisplay : dict.common.whatsapp}
-                    </p>
+                    {siteConfig.email}
                   </a>
-                )}
-                <a
-                  href={`mailto:${siteConfig.email}`}
-                  className="block py-6 transition hover:opacity-70"
-                >
-                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">
-                    {dict.common.email}
-                  </p>
-                  <p className="mt-2 font-display text-xl text-ink md:text-2xl">{siteConfig.email}</p>
-                </a>
-                <div className="py-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">
-                    {c.addressLabel}
-                  </p>
-                  <p className="mt-3 font-semibold text-ink">Patrick Smid</p>
-                  <p className="mt-1 text-muted">{siteConfig.addressLine1}</p>
-                  <p className="text-muted">{siteConfig.addressLine2}</p>
-                  <p className="text-muted">{siteConfig.country}</p>
-                </div>
-                <div className="py-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">
-                    {c.companyLabel}
-                  </p>
-                  <p className="mt-3 text-muted">KvK {siteConfig.kvk}</p>
-                  <p className="text-muted">BTW {siteConfig.btw}</p>
-                </div>
-              </div>
+                </ContactRow>
+              </ul>
             </div>
           </Reveal>
 

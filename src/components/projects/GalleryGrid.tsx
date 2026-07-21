@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import type { GalleryItem } from "@/content/types";
 import { Reveal } from "@/components/shared/Reveal";
+import { cn } from "@/lib/utils";
 
 type Props = {
   items: GalleryItem[];
@@ -15,7 +16,10 @@ type Props = {
   nextLabel?: string;
 };
 
-/** Varying widths, shared row height: 2-1-1 / 1-2-1 / 1-1-2 */
+/**
+ * Bluewake mosaic on a 4-col grid:
+ * row pattern 2-1-1 / 1-2-1 / 1-1-2 (wide + two portraits)
+ */
 const spans = [
   "md:col-span-2",
   "md:col-span-1",
@@ -110,18 +114,20 @@ export function GalleryGrid({
   }, [active, visible, close, go]);
 
   return (
-    <section className="section bg-white" aria-labelledby={headingId}>
+    <section className="bg-white py-20 md:py-28" aria-labelledby={headingId}>
       <div className="container">
-        <div className="section-head grid gap-6 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.75fr)] md:items-end md:gap-12 lg:gap-16">
+        <div className="mb-12 grid gap-6 md:mb-16 md:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] md:items-end md:gap-16 lg:mb-20 lg:gap-24">
           <Reveal variant="left">
             <div>
               {eyebrow && (
-                <p className="eyebrow eyebrow-caps !mb-4">{eyebrow}</p>
+                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[#111]">
+                  {eyebrow}
+                </p>
               )}
               {title && (
                 <h2
                   id={headingId}
-                  className="max-w-xl text-[clamp(2.15rem,4.2vw,3.5rem)] leading-[1.05] tracking-[-0.04em] text-ink"
+                  className="mt-4 max-w-[16ch] font-display text-[clamp(2rem,4vw,3.35rem)] font-medium leading-[1.08] tracking-[-0.035em] text-[#111]"
                 >
                   {title}
                 </h2>
@@ -130,46 +136,63 @@ export function GalleryGrid({
           </Reveal>
           {body && (
             <Reveal delay={90} variant="right">
-              <p className="max-w-md text-[1.05rem] leading-relaxed text-muted md:justify-self-end md:text-right">
+              <p className="max-w-sm text-[0.98rem] leading-[1.7] text-[#6b7280] md:justify-self-end md:text-right">
                 {body}
               </p>
             </Reveal>
           )}
         </div>
 
-        <div className="gallery-mosaic grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4 md:gap-4">
-          {items.map((galleryItem, i) => (
-            <Reveal
-              key={galleryItem.id}
-              delay={(i % 6) * 45}
-              className={spans[i % spans.length]}
-            >
-              <button
-                type="button"
-                onClick={() => openAt(i)}
-                aria-label={`${galleryItem.title} — ${galleryItem.category}`}
-                className="gallery-tile group relative block w-full overflow-hidden text-left"
+        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-3 md:grid-cols-4 md:gap-3 lg:gap-3.5">
+          {items.map((galleryItem, i) => {
+            const span = spans[i % spans.length];
+            const isWide = span.includes("col-span-2");
+
+            return (
+              <Reveal
+                key={galleryItem.id}
+                delay={(i % 6) * 40}
+                className={cn(span)}
               >
-                <Image
-                  src={galleryItem.image}
-                  alt={galleryItem.title}
-                  fill
-                  className="gallery-tile-image object-cover"
-                  sizes="(max-width:768px) 100vw, (max-width:1024px) 50vw, 50vw"
-                />
-                <span className="gallery-tile-hover" aria-hidden="true" />
-              </button>
-            </Reveal>
-          ))}
+                <button
+                  type="button"
+                  onClick={() => openAt(i)}
+                  aria-label={`${galleryItem.title} — ${galleryItem.category}`}
+                  className={cn(
+                    "group relative block w-full overflow-hidden rounded-none bg-[#0b1520] text-left",
+                    "h-[240px] sm:h-[260px] md:h-[300px] lg:h-[340px]",
+                    "cursor-zoom-in focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#111]"
+                  )}
+                >
+                  <Image
+                    src={galleryItem.image}
+                    alt={galleryItem.title}
+                    fill
+                    className="object-cover transition-transform duration-[1.1s] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform group-hover:scale-[1.05] group-focus-visible:scale-[1.05]"
+                    sizes={
+                      isWide
+                        ? "(max-width:768px) 100vw, 50vw"
+                        : "(max-width:768px) 100vw, 25vw"
+                    }
+                  />
+                  <span
+                    className="pointer-events-none absolute inset-0 bg-transparent transition-colors duration-400 group-hover:bg-[#070d14]/10 group-focus-visible:bg-[#070d14]/10"
+                    aria-hidden="true"
+                  />
+                </button>
+              </Reveal>
+            );
+          })}
         </div>
       </div>
 
       {activeItem && (
         <div
           ref={dialogRef}
-          className={`lightbox-backdrop fixed inset-0 z-[80] flex items-center justify-center bg-[#070d14]/92 p-3 backdrop-blur-md md:p-8 ${
-            visible ? "" : "opacity-0"
-          }`}
+          className={cn(
+            "fixed inset-0 z-[80] flex items-center justify-center bg-[#070d14]/92 p-3 backdrop-blur-md md:p-8",
+            !visible && "opacity-0"
+          )}
           role="dialog"
           aria-modal="true"
           aria-labelledby={titleId}
@@ -208,16 +231,16 @@ export function GalleryGrid({
           </button>
 
           <div
-            className="lightbox-panel relative w-full max-w-5xl overflow-hidden bg-transparent"
+            className="relative w-full max-w-5xl overflow-hidden bg-transparent"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative aspect-[16/11] w-full overflow-hidden rounded-[0.75rem] bg-[#0b1520] shadow-[var(--shadow-lg)]">
+            <div className="relative aspect-[16/11] w-full overflow-hidden rounded-none bg-[#0b1520] shadow-[var(--shadow-lg)]">
               <Image
                 key={activeItem.id}
                 src={activeItem.image}
                 alt={activeItem.title}
                 fill
-                className="lightbox-image object-cover"
+                className="object-cover"
                 sizes="(max-width:1024px) 100vw, 90vw"
                 priority
               />

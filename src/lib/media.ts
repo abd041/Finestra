@@ -1,5 +1,6 @@
 export const media = {
   hero: "/images/hero-yacht.jpg",
+  heroVideo: "/hero-video.mp4",
   patrick: "/images/patrick-smid.jpg",
   craftsman: "/images/craftsman-work.jpg",
   yachtAlt: "/images/banner-yacht.jpg",

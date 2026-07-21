@@ -23,21 +23,21 @@ const serviceMedia = [
   },
   {
     image: media.services.grinding,
-    before: "",
-    after: "",
-    showBeforeAfter: false,
+    before: media.glassBefore,
+    after: media.glassAfter,
+    showBeforeAfter: true,
   },
   {
     image: media.services.film,
-    before: "",
-    after: "",
-    showBeforeAfter: false,
+    before: media.glassBefore,
+    after: media.glassAfter,
+    showBeforeAfter: true,
   },
   {
     image: media.services.coating,
-    before: "",
-    after: "",
-    showBeforeAfter: false,
+    before: media.glassBefore,
+    after: media.glassAfter,
+    showBeforeAfter: true,
   },
 ];
 

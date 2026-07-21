@@ -178,7 +178,7 @@ export function BeforeAfter({
             </h2>
           </Reveal>
           <Reveal variant="left" delay={80}>
-            <p className="mt-7 max-w-md text-[1.05rem] leading-relaxed text-muted md:text-lg md:leading-[1.7]">
+            <p className="mt-7 max-w-md text-[1.05rem] leading-relaxed text-muted-foreground md:text-lg md:leading-[1.7]">
               {body}
             </p>
           </Reveal>
@@ -195,13 +195,8 @@ export function BeforeAfter({
         <Reveal variant="scale" delay={120}>
           <div className="relative mx-auto w-full max-w-[640px] lg:mx-0 lg:max-w-none">
             <div
-              className="pointer-events-none absolute -inset-3 rounded-[calc(var(--radius-panel)+0.75rem)] border border-[var(--line)] md:-inset-4"
-              aria-hidden="true"
-            />
-
-            <div
               ref={containerRef}
-              className={`ba-frame relative min-h-[300px] aspect-[5/4] cursor-ew-resize overflow-hidden rounded-[var(--radius-panel)] bg-sand shadow-[var(--shadow-lg)] select-none touch-none md:min-h-[440px] md:aspect-[4/3] ${
+              className={`ba-frame relative min-h-[300px] aspect-[5/4] cursor-ew-resize overflow-hidden rounded-[8px] bg-sand shadow-[var(--shadow-lg)] select-none touch-none md:min-h-[440px] md:aspect-[4/3] ${
                 active ? "ba-frame-active" : ""
               }`}
               onPointerDown={(e) => {
