@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 import type { Dictionary, Locale } from "@/content";
@@ -47,6 +47,21 @@ const navLinkClass = (active: boolean) =>
 export function Header({ locale, dict }: Props) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  // Close mobile sheet when resizing to desktop nav (lg) so overlay cannot trap clicks
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const onChange = () => {
+      if (mq.matches) setOpen(false);
+    };
+    onChange();
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   const links = [
     { href: localePath(locale, "/"), label: dict.nav.home },

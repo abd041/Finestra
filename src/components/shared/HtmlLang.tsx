@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import type { Locale } from "@/content";
 
-export function SetHtmlLang({ locale }: { locale: Locale }) {
+/** Keeps <html lang> in sync on client navigations without rendering a <script>. */
+export function HtmlLang({ locale }: { locale: string }) {
   useEffect(() => {
     document.documentElement.lang = locale;
   }, [locale]);
+
   return null;
 }

@@ -3,8 +3,6 @@ export const media = {
   heroVideo: "/hero-video.mp4",
   patrick: "/images/patrick-smid.jpg",
   craftsman: "/images/craftsman-work.jpg",
-  yachtAlt: "/images/banner-yacht.jpg",
-  yachtDetail: "/images/yacht-detail.jpg",
   cta: "/images/cta-restore.jpg",
   glassBefore: "/images/glass-before.jpg",
   glassAfter: "/images/glass-after.jpg",
@@ -21,18 +19,6 @@ export const media = {
     about: "/images/craftsman-work.jpg",
     contact: "/images/hero-yacht.jpg",
   },
-  gallery: [
-    "/images/hero-yacht.jpg",
-    "/images/banner-yacht.jpg",
-    "/images/yacht-detail.jpg",
-    "/images/craftsman-work.jpg",
-    "/images/service-polish.jpg",
-    "/images/service-grinding.jpg",
-    "/images/glass-after.jpg",
-    "/images/service-coating.jpg",
-    "/images/service-film.jpg",
-    "/images/glass-before.jpg",
-  ],
 } as const;
 
 const phoneDisplay = process.env.NEXT_PUBLIC_PHONE_DISPLAY?.trim() || "";

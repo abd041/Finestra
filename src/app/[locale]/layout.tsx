@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { MotionProvider } from "@/components/motion/MotionProvider";
+import { HtmlLang } from "@/components/shared/HtmlLang";
 import { JsonLd } from "@/components/shared/JsonLd";
-import { SetHtmlLang } from "@/components/shared/SetHtmlLang";
 import { SkipLink } from "@/components/shared/SkipLink";
 import { getDictionary, isLocale, locales, type Locale } from "@/content";
 import { organizationJsonLd, buildPageMetadata } from "@/lib/seo";
@@ -42,12 +42,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `document.documentElement.lang=${JSON.stringify(locale)};`,
-        }}
-      />
-      <SetHtmlLang locale={locale} />
+      <HtmlLang locale={locale} />
       <JsonLd data={organizationJsonLd(dict.meta.defaultDescription, locale)} />
       <SkipLink label={dict.common.skipToContent} />
       <MotionProvider>

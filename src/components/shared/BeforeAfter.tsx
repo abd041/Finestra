@@ -168,9 +168,9 @@ export function BeforeAfter({
   };
 
   return (
-    <section className="section" aria-labelledby={labelId}>
+    <section className="section overflow-x-clip" aria-labelledby={labelId}>
       <div className="container grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 xl:gap-20">
-        <Stagger stagger={staggerDelay.loose}>
+        <Stagger className="min-w-0" stagger={staggerDelay.loose}>
           <FadeInItem direction="left" distance={offset.lateral}>
             <p className="eyebrow eyebrow-caps !mb-4">{eyebrow}</p>
             <h2 id={labelId} className="max-w-[14ch] text-ink">
@@ -198,7 +198,11 @@ export function BeforeAfter({
           )}
         </Stagger>
 
-        <FadeIn direction="scale" durationSec={duration.medium}>
+        <FadeIn
+          className="min-w-0 w-full"
+          direction="scale"
+          durationSec={duration.medium}
+        >
           <div
             ref={containerRef}
             className={`ba-frame relative mx-auto min-h-[300px] w-full max-w-[640px] aspect-[5/4] cursor-ew-resize overflow-hidden rounded-[4px] bg-black select-none touch-none md:min-h-[440px] md:aspect-[4/3] lg:mx-0 lg:max-w-none ${
@@ -215,7 +219,7 @@ export function BeforeAfter({
               fill
               draggable={false}
               className="pointer-events-none object-cover"
-              sizes="(max-width:1024px) 100vw, 55vw"
+              sizes="(max-width:1024px) 92vw, 55vw"
             />
             <div
               className="pointer-events-none absolute inset-0"
@@ -227,7 +231,7 @@ export function BeforeAfter({
                 fill
                 draggable={false}
                 className="pointer-events-none object-cover"
-                sizes="(max-width:1024px) 100vw, 55vw"
+                sizes="(max-width:1024px) 92vw, 55vw"
               />
             </div>
 

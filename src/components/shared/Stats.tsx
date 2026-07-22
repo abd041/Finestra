@@ -79,7 +79,7 @@ export function Stats({ eyebrow, title, stats }: Props) {
     >
       <div className="container relative">
         <div
-          className="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-white/[0.03] blur-3xl md:h-96 md:w-96"
+          className="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-white/[0.03] blur-3xl md:h-96 md:w-96 max-lg:hidden"
           aria-hidden="true"
         />
 
