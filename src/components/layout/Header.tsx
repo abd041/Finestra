@@ -47,6 +47,13 @@ const navLinkClass = (active: boolean) =>
 export function Header({ locale, dict }: Props) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [menuPathname, setMenuPathname] = useState(pathname);
+
+  // Close sheet on navigation (adjust state during render when pathname changes)
+  if (pathname !== menuPathname) {
+    setMenuPathname(pathname);
+    if (open) setOpen(false);
+  }
 
   // Close mobile sheet when resizing to desktop nav (lg) so overlay cannot trap clicks
   useEffect(() => {
@@ -58,10 +65,6 @@ export function Header({ locale, dict }: Props) {
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
   }, []);
-
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
 
   const links = [
     { href: localePath(locale, "/"), label: dict.nav.home },
