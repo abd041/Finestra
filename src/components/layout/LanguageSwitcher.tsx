@@ -19,10 +19,10 @@ export function LanguageSwitcher({ locale, label, tone = "light" }: Props) {
   return (
     <div
       className={cn(
-        "flex items-center rounded-full border p-1 text-[0.7rem] font-semibold uppercase tracking-[0.12em]",
+        "flex items-center rounded-full border p-1 type-small uppercase",
         dark
           ? "border-white/25 bg-white/5"
-          : "border-border bg-muted/60"
+          : "border-[var(--borders)] bg-[var(--light-gray)]"
       )}
       role="group"
       aria-label={label}
@@ -34,11 +34,11 @@ export function LanguageSwitcher({ locale, label, tone = "light" }: Props) {
           "lang-pill rounded-full px-2.5 py-1.5 transition",
           locale === "nl"
             ? dark
-              ? "bg-white text-ink"
-              : "bg-white text-ink shadow-sm"
+              ? "bg-white text-black"
+              : "bg-white text-black shadow-sm"
             : dark
               ? "text-white/75 hover:text-white"
-              : "text-muted-foreground hover:text-ink"
+              : "text-muted-foreground hover:text-black"
         )}
         aria-current={locale === "nl" ? "true" : undefined}
         lang="nl"
@@ -52,11 +52,11 @@ export function LanguageSwitcher({ locale, label, tone = "light" }: Props) {
           "lang-pill rounded-full px-2.5 py-1.5 transition",
           locale === "en"
             ? dark
-              ? "bg-white text-ink"
-              : "bg-white text-ink shadow-sm"
+              ? "bg-white text-black"
+              : "bg-white text-black shadow-sm"
             : dark
               ? "text-white/75 hover:text-white"
-              : "text-muted-foreground hover:text-ink"
+              : "text-muted-foreground hover:text-black"
         )}
         aria-current={locale === "en" ? "true" : undefined}
         lang="en"

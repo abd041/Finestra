@@ -1,20 +1,16 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { Figtree, Outfit } from "next/font/google";
+import { Geist } from "next/font/google";
 import { defaultLocale, isLocale } from "@/content";
 import { siteConfig } from "@/lib/media";
 import { cn } from "@/lib/utils";
 import "./globals.css";
 
-const figtree = Figtree({
-  variable: "--font-body",
+/** Bluewake 1:1 — Geist from Google Fonts, weights 400 + 500 only */
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
-  display: "swap",
-});
-
-const outfit = Outfit({
-  variable: "--font-display-family",
-  subsets: ["latin"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -43,7 +39,7 @@ export default async function RootLayout({
   return (
     <html
       lang={lang}
-      className={cn("no-js h-full font-sans", figtree.variable, outfit.variable)}
+      className={cn("no-js h-full font-sans", geist.variable)}
       suppressHydrationWarning
     >
       <head>

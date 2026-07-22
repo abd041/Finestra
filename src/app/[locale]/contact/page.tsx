@@ -29,7 +29,7 @@ function ContactRow({
       <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#ececec] text-[#111]">
         <Icon className="size-[18px]" strokeWidth={1.6} aria-hidden="true" />
       </span>
-      <div className="min-w-0 text-[0.95rem] leading-snug text-[#111]">
+      <div className="type-body min-w-0 text-[#111]">
         {children}
       </div>
     </li>
@@ -96,10 +96,10 @@ export default async function ContactPage({ params }: Props) {
         <div className="container grid items-center gap-14 lg:grid-cols-2 lg:gap-16 xl:gap-20">
           <FadeIn direction="left" distance={offset.lateral}>
             <div className="max-w-[28rem]">
-              <p className="text-[0.7rem] font-medium uppercase tracking-[0.16em] text-[#111]">
+              <p className="type-label text-[#111]">
                 {c.infoEyebrow}
               </p>
-              <h2 className="mt-5 font-display text-[clamp(2.15rem,4vw,3.35rem)] font-medium leading-[1.1] tracking-[-0.03em] text-[#111]">
+              <h2 className="mt-5 text-[#111]">
                 {c.infoTitle}
               </h2>
 

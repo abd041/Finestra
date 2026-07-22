@@ -76,12 +76,12 @@ export default async function AboutPage({ params }: Props) {
         <div className="container">
           <FadeIn distance={offset.sm}>
             <div className="section-head max-w-2xl">
-              <h2 className="text-[clamp(2.1rem,4vw,3.4rem)] text-ink">{a.spotlightTitle}</h2>
-              <p className="mt-5 text-muted-foreground md:text-lg">{a.spotlightBody}</p>
+              <h2 className="text-ink">{a.spotlightTitle}</h2>
+              <p className="type-body-lg mt-5 text-muted-foreground">{a.spotlightBody}</p>
             </div>
           </FadeIn>
           <FadeIn direction="scale" durationSec={duration.medium} className="mt-10 md:mt-12">
-            <div className="grid overflow-hidden rounded-[var(--radius-panel)] bg-white shadow-[var(--shadow-md)] lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="grid overflow-hidden rounded-[4px] bg-white lg:grid-cols-[1.1fr_0.9fr]">
               <div className="media-frame relative min-h-[360px] aspect-[4/5] lg:aspect-auto lg:min-h-[520px]">
                 <Image
                   src={media.patrick}
@@ -93,9 +93,9 @@ export default async function AboutPage({ params }: Props) {
               </div>
               <div className="flex flex-col justify-center p-8 md:p-12 lg:p-14">
                 <p className="eyebrow">{a.founderTitle}</p>
-                <p className="font-display text-[clamp(2rem,3.5vw,3rem)] text-ink">{a.founderName}</p>
-                <p className="mt-2 text-muted-foreground">{a.founderRole}</p>
-                <blockquote className="mt-8 border-t border-[var(--line)] pt-8 font-display text-[clamp(1.25rem,2.4vw,1.75rem)] leading-snug text-ink">
+                <p className="type-h2 text-ink">{a.founderName}</p>
+                <p className="type-body mt-2 text-muted-foreground">{a.founderRole}</p>
+                <blockquote className="type-h4 mt-8 border-t border-[var(--line)] pt-8 text-ink">
                   “{a.founderQuote}”
                 </blockquote>
               </div>

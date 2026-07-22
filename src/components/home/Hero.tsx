@@ -19,6 +19,7 @@ type Props = {
   imageAlt: string;
 };
 
+/** Full-viewport hero — video fills the screen below the framed header */
 export function Hero({
   locale,
   eyebrow,
@@ -31,54 +32,55 @@ export function Hero({
 }: Props) {
   return (
     <section
-      className="relative min-h-[100svh] overflow-hidden bg-navy"
+      className="relative flex min-h-[100svh] flex-col overflow-hidden bg-[var(--light-gray)] px-2 pt-2"
       aria-label={label}
     >
-      <HeroVideo poster={media.hero} imageAlt={imageAlt} src={media.heroVideo} />
+      <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-t-[4px]">
+        <HeroVideo
+          poster={media.hero}
+          imageAlt={imageAlt}
+          src={media.heroVideo}
+        />
 
-      <div
-        className="absolute inset-0 bg-gradient-to-r from-[#070d14]/88 via-[#070d14]/55 to-[#070d14]/15"
-        aria-hidden="true"
-      />
-      <div
-        className="absolute inset-0 bg-gradient-to-t from-[#070d14]/80 via-[#070d14]/25 to-[#070d14]/45"
-        aria-hidden="true"
-      />
+        {/* Bluewake .black-overlay ≈ #0003 */}
+        <div
+          className="absolute inset-0 bg-[var(--black-20)]"
+          aria-hidden="true"
+        />
 
-      <div className="container relative z-10 flex min-h-[100svh] items-end pb-20 pt-36 md:pb-28">
-        <Stagger
-          trigger="mount"
-          className="max-w-3xl"
-          stagger={staggerDelay.loose}
-        >
-          <FadeInItem distance={offset.sm} durationSec={duration.default}>
-            <p className="eyebrow eyebrow-caps !mb-5 !text-white/80">{eyebrow}</p>
-          </FadeInItem>
-          <FadeInItem distance={offset.default} durationSec={duration.hero}>
-            <h1 className="max-w-[14ch] text-[clamp(2.75rem,6.8vw,5.25rem)] leading-[1.02] tracking-[-0.04em] text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.35)]">
-              {title}
-            </h1>
-          </FadeInItem>
-          <FadeInItem distance={offset.sm} durationSec={duration.default}>
-            <p className="mt-7 max-w-xl text-lg leading-relaxed text-white/90 md:text-xl [text-shadow:0_1px_12px_rgba(0,0,0,0.35)]">
-              {subtitle}
-            </p>
-          </FadeInItem>
-          <FadeInItem distance={offset.sm} durationSec={duration.default}>
-            <div className="mt-11">
-              <Button variant="hero" size="lg" asChild>
-                <Link href={localePath(locale, "/contact")}>{cta}</Link>
-              </Button>
-            </div>
-          </FadeInItem>
-          <FadeInItem distance={offset.sm} durationSec={duration.fast}>
-            <div className="dot-row mt-11 !text-white/75">
-              {pills.map((pill) => (
-                <span key={pill}>{pill}</span>
-              ))}
-            </div>
-          </FadeInItem>
-        </Stagger>
+        <div className="container relative z-10 flex flex-1 items-end px-[15px] pb-10 pt-28 min-[1280px]:pb-20 min-[1920px]:px-40">
+          <Stagger
+            trigger="mount"
+            className="max-w-3xl"
+            stagger={staggerDelay.loose}
+          >
+            <FadeInItem distance={offset.sm} durationSec={duration.default}>
+              <p className="eyebrow eyebrow-caps !mb-4 !text-white">{eyebrow}</p>
+            </FadeInItem>
+            <FadeInItem distance={offset.default} durationSec={duration.hero}>
+              <h1 className="max-w-[14ch] text-white">{title}</h1>
+            </FadeInItem>
+            <FadeInItem distance={offset.sm} durationSec={duration.default}>
+              <p className="type-body-lg mt-5 max-w-xl text-white/90">
+                {subtitle}
+              </p>
+            </FadeInItem>
+            <FadeInItem distance={offset.sm} durationSec={duration.default}>
+              <div className="mt-8">
+                <Button variant="secondary" asChild>
+                  <Link href={localePath(locale, "/contact")}>{cta}</Link>
+                </Button>
+              </div>
+            </FadeInItem>
+            <FadeInItem distance={offset.sm} durationSec={duration.fast}>
+              <div className="dot-row mt-8 !text-white/80">
+                {pills.map((pill) => (
+                  <span key={pill}>{pill}</span>
+                ))}
+              </div>
+            </FadeInItem>
+          </Stagger>
+        </div>
       </div>
     </section>
   );

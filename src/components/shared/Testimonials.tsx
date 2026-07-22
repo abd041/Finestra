@@ -53,28 +53,28 @@ function TestimonialCard({
   return (
     <article
       className={cn(
-        "flex h-[300px] w-[220px] flex-col rounded-2xl border-0 bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.12)] sm:h-[360px] sm:w-[300px] sm:p-7 md:h-[400px] md:w-[340px] md:p-8",
+        "flex h-[300px] w-[220px] flex-col rounded-[4px] border-0 bg-white p-6 shadow-none sm:h-[360px] sm:w-[300px] sm:p-7 md:h-[400px] md:w-[340px] md:p-8",
         featured &&
-          "z-[2] sm:h-[380px] sm:w-[320px] md:h-[420px] md:w-[360px] shadow-[0_28px_70px_rgba(15,23,42,0.16)]",
+          "z-[2] sm:h-[380px] sm:w-[320px] md:h-[420px] md:w-[360px]",
         className
       )}
     >
       <Stars />
-      <p className="mt-5 flex-1 text-[0.92rem] leading-[1.7] text-[#374151] md:text-[0.98rem] md:leading-[1.75]">
+      <p className="type-body mt-5 flex-1 text-[#374151]">
         {item.quote}
       </p>
       <div className="mt-6 flex items-center gap-3">
         <div
-          className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#e8e8e8] font-display text-[0.8rem] text-[#111]"
+          className="type-small flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#e8e8e8] text-[#111]"
           aria-hidden="true"
         >
           {initials(item.name)}
         </div>
         <div className="min-w-0 text-left">
-          <p className="truncate text-[0.95rem] font-semibold text-[#111]">
+          <p className="type-h5 truncate text-[#111]">
             {item.name}
           </p>
-          <p className="mt-0.5 truncate text-[0.8rem] text-[#6b7280]">
+          <p className="type-caption mt-0.5 truncate text-[#6b7280]">
             {item.role}
           </p>
         </div>
@@ -186,12 +186,12 @@ export function Testimonials({
 
   return (
     <section
-      className="relative overflow-x-clip py-20 md:py-28"
+      className="section gray-bg relative overflow-x-clip"
       aria-labelledby={titleId}
       aria-label={groupLabel}
     >
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-white" />
+        <div className="absolute inset-0 bg-[var(--light-gray)]" />
         <div className="absolute inset-x-0 bottom-0 h-[55%] overflow-hidden">
           <Image
             src={media.banners.projects}
@@ -201,24 +201,21 @@ export function Testimonials({
             sizes="100vw"
             quality={70}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1a2330]/35 via-[#1a2330]/10 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-b from-white via-white/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[var(--light-gray)] via-[var(--light-gray)]/80 to-transparent" />
         </div>
       </div>
 
       <FadeIn distance={offset.sm}>
-        <div className="relative mx-auto w-[min(900px,calc(100%-2rem))] text-center">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#111]">
+        <div className="container relative text-center">
+          <p className="type-label text-[#111]">
             {eyebrow}
           </p>
-          <h2
-            id={titleId}
-            className="mx-auto mt-3 max-w-[22ch] font-display text-[clamp(1.75rem,3.4vw,2.75rem)] font-medium leading-[1.15] tracking-[-0.03em] text-[#111]"
-          >
+          <h2 id={titleId} className="mx-auto mt-3 max-w-[22ch] text-[#111]">
             {title}
           </h2>
           {body && (
-            <p className="mx-auto mt-4 max-w-xl text-[1rem] leading-relaxed text-[#4b5563]">
+            <p className="type-body mx-auto mt-4 max-w-xl text-[#4b5563]">
               {body}
             </p>
           )}

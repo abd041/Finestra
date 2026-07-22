@@ -173,15 +173,12 @@ export function BeforeAfter({
         <Stagger stagger={staggerDelay.loose}>
           <FadeInItem direction="left" distance={offset.lateral}>
             <p className="eyebrow eyebrow-caps !mb-4">{eyebrow}</p>
-            <h2
-              id={labelId}
-              className="max-w-[14ch] text-[clamp(2.35rem,4.6vw,3.9rem)] leading-[1.02] tracking-[-0.04em] text-ink"
-            >
+            <h2 id={labelId} className="max-w-[14ch] text-ink">
               {title}
             </h2>
           </FadeInItem>
           <FadeInItem direction="left" distance={offset.lateral}>
-            <p className="mt-7 max-w-md text-[1.05rem] leading-relaxed text-muted-foreground md:text-lg md:leading-[1.7]">
+            <p className="type-body-lg mt-7 max-w-md text-muted-foreground">
               {body}
             </p>
           </FadeInItem>
@@ -190,7 +187,7 @@ export function BeforeAfter({
               <Button
                 variant="link"
                 asChild
-                className="link-arrow mt-10 h-auto px-0 text-[1.02rem]"
+                className="link-arrow mt-10 h-auto px-0"
               >
                 <Link href={ctaHref}>
                   {ctaLabel}
@@ -204,7 +201,7 @@ export function BeforeAfter({
         <FadeIn direction="scale" durationSec={duration.medium}>
           <div
             ref={containerRef}
-            className={`ba-frame relative mx-auto min-h-[300px] w-full max-w-[640px] aspect-[5/4] cursor-ew-resize overflow-hidden rounded-[8px] bg-[#0b1520] shadow-[var(--shadow-lg)] select-none touch-none md:min-h-[440px] md:aspect-[4/3] lg:mx-0 lg:max-w-none ${
+            className={`ba-frame relative mx-auto min-h-[300px] w-full max-w-[640px] aspect-[5/4] cursor-ew-resize overflow-hidden rounded-[4px] bg-black select-none touch-none md:min-h-[440px] md:aspect-[4/3] lg:mx-0 lg:max-w-none ${
               active ? "ba-frame-active" : ""
             }`}
             onPointerDown={(e) => {
@@ -242,7 +239,7 @@ export function BeforeAfter({
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="ba-handle pointer-events-auto absolute top-1/2 left-1/2 h-14 w-14 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize rounded-full border border-white/80 bg-white text-ink shadow-[0_12px_40px_rgba(10,15,20,0.28)] hover:bg-white hover:text-ink focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:outline-none active:translate-y-0"
+                className="ba-handle pointer-events-auto absolute top-1/2 left-1/2 h-14 w-14 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize rounded-full border border-white/80 bg-white text-black shadow-[var(--shadow-sm)] hover:bg-white hover:text-black focus-visible:ring-2 focus-visible:ring-[var(--accent-blue)] focus-visible:ring-offset-2 focus-visible:outline-none active:translate-y-0"
                 role="slider"
                 aria-valuemin={0}
                 aria-valuemax={100}
@@ -280,15 +277,15 @@ export function BeforeAfter({
             </div>
 
             <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex justify-between p-5 md:p-6">
-              <span className="rounded-full bg-navy/80 px-3.5 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white backdrop-blur-sm">
+              <span className="type-label rounded-full bg-black/80 px-3.5 py-1.5 text-white backdrop-blur-sm">
                 {beforeLabel}
               </span>
-              <span className="rounded-full bg-white/90 px-3.5 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-ink backdrop-blur-sm">
+              <span className="type-label rounded-full bg-white/90 px-3.5 py-1.5 text-ink backdrop-blur-sm">
                 {afterLabel}
               </span>
             </div>
 
-            <p className="pointer-events-none absolute inset-x-0 bottom-5 z-20 text-center text-[0.7rem] font-medium uppercase tracking-[0.18em] text-white/80 drop-shadow md:bottom-6">
+            <p className="type-label pointer-events-none absolute inset-x-0 bottom-5 z-20 text-center text-white/80 drop-shadow md:bottom-6">
               {dragHint}
             </p>
           </div>

@@ -48,34 +48,22 @@ export function PageBanner({
       <div
         className={`absolute inset-0 ${
           pricing
-            ? "bg-gradient-to-r from-[#070d14]/78 via-[#070d14]/40 to-transparent"
-            : "bg-gradient-to-r from-[#070d14]/88 via-[#070d14]/55 to-[#070d14]/25"
+            ? "bg-gradient-to-r from-black/55 via-black/20 to-transparent"
+            : "bg-gradient-to-r from-black/55 via-black/25 to-black/20"
         }`}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#070d14]/88 via-transparent to-[#070d14]/15" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/20" />
       <div className="container relative z-10 pt-36 pb-12 md:pb-16">
         <Stagger trigger="mount" stagger={staggerDelay.loose} className="max-w-4xl">
           <FadeInItem distance={offset.sm} durationSec={duration.default}>
             <p className="eyebrow !text-white/70">{eyebrow}</p>
           </FadeInItem>
           <FadeInItem distance={offset.default} durationSec={duration.hero}>
-            <h1
-              className={`text-white ${
-                pricing
-                  ? "text-[clamp(2.8rem,6.5vw,5.25rem)] leading-[1.02]"
-                  : "text-[clamp(2.4rem,5.5vw,4.5rem)]"
-              }`}
-            >
-              {title}
-            </h1>
+            <h1 className="text-white">{title}</h1>
           </FadeInItem>
           {subtitle && (
             <FadeInItem distance={offset.sm} durationSec={duration.default}>
-              <p
-                className={`mt-5 max-w-2xl text-white/80 ${
-                  pricing ? "text-lg md:text-xl" : "text-lg"
-                }`}
-              >
+              <p className="type-body-lg mt-5 max-w-2xl text-white/80">
                 {subtitle}
               </p>
             </FadeInItem>

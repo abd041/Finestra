@@ -87,10 +87,7 @@ export function Stats({ eyebrow, title, stats }: Props) {
         <FadeIn distance={offset.sm}>
           <div className="section-head max-w-3xl">
             <p className="eyebrow eyebrow-caps !mb-4 !text-white/70">{eyebrow}</p>
-            <h2
-              id="stats-title"
-              className="max-w-[16ch] text-[clamp(2.2rem,4.4vw,3.75rem)] leading-[1.02] tracking-[-0.04em] text-white"
-            >
+            <h2 id="stats-title" className="max-w-[16ch] text-white">
               {title}
             </h2>
           </div>
@@ -106,7 +103,7 @@ export function Stats({ eyebrow, title, stats }: Props) {
                   }`}
                 >
                   <p
-                    className="font-display text-[clamp(3.25rem,7vw,5.5rem)] leading-none tracking-[-0.05em] text-white"
+                    className="type-h1 text-white"
                     aria-label={`${stat.value} ${stat.label}`}
                   >
                     <span aria-hidden="true">
@@ -118,7 +115,7 @@ export function Stats({ eyebrow, title, stats }: Props) {
                     className="stat-rule mx-auto mt-5 h-px w-10 bg-white/25 sm:mx-auto"
                     aria-hidden="true"
                   />
-                  <p className="mt-5 text-[0.8rem] font-medium uppercase tracking-[0.16em] text-white/70">
+                  <p className="type-label mt-5 text-white/70">
                     {stat.label}
                   </p>
                 </div>

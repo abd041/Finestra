@@ -47,53 +47,53 @@ export function CTABanner({
           quality={85}
         />
         <div
-          className="absolute inset-0 bg-[#070d14]/55"
+          className="absolute inset-0 bg-black/55"
           aria-hidden="true"
         />
         <div
-          className="absolute inset-0 bg-gradient-to-t from-[#070d14]/75 via-[#070d14]/35 to-[#070d14]/40"
+          className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/25 to-black/35"
           aria-hidden="true"
         />
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-[min(85vh,780px)] w-[min(920px,calc(100%-2rem))] flex-col items-center justify-center py-28 text-center md:py-36 lg:min-h-[680px] lg:py-40">
+      <div className="container relative z-10 flex min-h-[min(85vh,780px)] flex-col items-center justify-center py-28 text-center md:py-36 lg:min-h-[680px] lg:py-40">
         {/* Single wrapper — no nested FadeIn (avoids double motion) */}
         <FadeIn
-          className="flex w-full flex-col items-center"
+          className="flex w-full max-w-[920px] flex-col items-center rounded-[4px] px-4 py-10 md:px-8 md:py-12"
           durationSec={duration.medium}
         >
           {eyebrow && (
-            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/90 [text-shadow:0_1px_12px_rgba(0,0,0,0.35)]">
+            <p className="type-label text-white/90 [text-shadow:0_1px_12px_rgba(0,0,0,0.35)]">
               {eyebrow}
             </p>
           )}
           <h2
             id="cta-banner-title"
-            className="mt-5 max-w-[18ch] font-display text-[clamp(2rem,4.5vw,3.35rem)] font-medium leading-[1.1] tracking-[-0.035em] text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.35)]"
+            className="mt-5 max-w-[18ch] text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.35)]"
           >
             {title}
           </h2>
           {body && (
-            <p className="mt-5 max-w-xl text-[1.02rem] leading-relaxed text-white/90 md:text-lg [text-shadow:0_1px_14px_rgba(0,0,0,0.35)]">
+            <p className="type-body-lg mt-5 max-w-xl text-white/90 [text-shadow:0_1px_14px_rgba(0,0,0,0.35)]">
               {body}
             </p>
           )}
 
           <Button
             asChild
-            size="lg"
-            className="mt-9 h-12 rounded-full border border-transparent bg-white px-8 text-[0.95rem] font-semibold text-black transition-[background-color,color,border-color,box-shadow] duration-300 hover:border-white hover:bg-white/10 hover:text-white hover:shadow-none"
+            variant="secondary"
+            className="mt-9"
           >
             <Link href={ctaHref}>{ctaLabel}</Link>
           </Button>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-white/90">
+          <div className="type-small mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-white/90">
             {siteConfig.hasPhone && (
               <a
                 href={siteConfig.phoneHref}
                 className="transition hover:text-white"
               >
-                <span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-white/75">
+                <span className="type-label mr-2 text-white/75">
                   {phoneLabel}
                 </span>
                 {siteConfig.phoneDisplay}

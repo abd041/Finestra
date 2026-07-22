@@ -21,13 +21,12 @@ type Props = {
 };
 
 const fieldClass = cn(
-  "h-[52px] w-full rounded-full border-0 bg-white px-6 text-[15px] text-black shadow-none",
-  "placeholder:text-[#9ca3af]",
-  "focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-ink/25 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f5f5f5]",
-  "md:text-[15px]"
+  "type-field h-auto w-full rounded-[50px] border-0 bg-white px-5 py-[14px] text-[var(--paragraph)] shadow-none",
+  "placeholder:text-[var(--paragraph)]/50",
+  "focus-visible:ring-2 focus-visible:ring-[var(--accent-blue)]/30"
 );
 
-const labelClass = "text-[15px] font-medium leading-none text-black";
+const labelClass = "type-body text-black";
 
 export function ContactForm({ locale, dict }: Props) {
   const t = dict.contactPage;
@@ -102,7 +101,7 @@ export function ContactForm({ locale, dict }: Props) {
   return (
     <Card
       id="enquiry"
-      className="gap-0 rounded-[1.75rem] border-0 bg-[#f5f5f5] py-0 shadow-none ring-0"
+      className="gap-0 rounded-[4px] border-0 bg-[var(--light-gray)] py-0 shadow-none ring-0"
     >
       <CardContent className="p-8 sm:p-9 md:p-[2.75rem]">
         <form onSubmit={onSubmit} noValidate className="relative flex flex-col gap-6">
@@ -181,7 +180,7 @@ export function ContactForm({ locale, dict }: Props) {
               <SelectContent
                 position="popper"
                 sideOffset={8}
-                className="max-h-72 w-[var(--radix-select-trigger-width)] rounded-2xl"
+                className="max-h-72 w-[var(--radix-select-trigger-width)] rounded-[4px]"
               >
                 {dict.serviceCards.map((s) => (
                   <SelectItem key={s.id} value={s.title}>
@@ -211,7 +210,7 @@ export function ContactForm({ locale, dict }: Props) {
             type="submit"
             disabled={status === "sending"}
             aria-busy={status === "sending"}
-            className="mt-1 h-[52px] w-full rounded-full border-0 bg-black text-[15px] font-semibold text-white shadow-none hover:bg-[#1a1a1a] focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 disabled:opacity-60"
+            className="mt-1 h-[52px] w-full"
           >
             {status === "sending" ? t.sending : t.submit}
           </Button>

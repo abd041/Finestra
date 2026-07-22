@@ -22,6 +22,7 @@ type Props = {
   imageAlt: string;
 };
 
+/** Bluewake about horizontal-block on gray-bg */
 export function IntroSplit({
   locale,
   eyebrow,
@@ -35,38 +36,33 @@ export function IntroSplit({
   imageAlt,
 }: Props) {
   return (
-    <section className="section surface-sand" aria-labelledby="home-intro-title">
-      <div className="container grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 xl:gap-20">
-        <Stagger
-          className="order-2 lg:order-1"
-          stagger={staggerDelay.loose}
-        >
+    <section
+      className="section gray-bg"
+      aria-labelledby="home-intro-title"
+    >
+      <div className="container grid items-center gap-[60px] max-[991px]:gap-[60px] lg:grid-cols-[1.05fr_0.95fr] lg:gap-[100px]">
+        <Stagger className="order-2 lg:order-1" stagger={staggerDelay.loose}>
           <FadeInItem direction="left" distance={offset.lateral}>
             <p className="eyebrow eyebrow-caps !mb-4">{eyebrow}</p>
-            <h2
-              id="home-intro-title"
-              className="max-w-[15ch] text-[clamp(2.35rem,4.8vw,4rem)] leading-[1.02] tracking-[-0.04em] text-ink"
-            >
+            <h2 id="home-intro-title" className="max-w-[15ch] text-black">
               {title}
             </h2>
           </FadeInItem>
 
           <FadeInItem direction="left" distance={offset.lateral}>
-            <p className="mt-8 max-w-xl text-[1.05rem] leading-[1.75] text-ink/80 md:text-lg md:leading-[1.7]">
+            <p className="type-body-lg mt-8 max-w-xl text-[var(--paragraph)]">
               {body}
             </p>
           </FadeInItem>
 
           <FadeInItem direction="left" distance={offset.lateral}>
-            <div className="mt-8 max-w-xl border-l-2 border-ink/10 pl-5 md:pl-6">
-              <p className="text-[0.95rem] leading-relaxed text-muted-foreground md:text-[1rem] md:leading-[1.75]">
-                {bodySecondary}
-              </p>
+            <div className="mt-8 max-w-xl border-l-2 border-[var(--borders)] pl-5 md:pl-6">
+              <p className="type-body text-[var(--paragraph)]">{bodySecondary}</p>
             </div>
           </FadeInItem>
 
           <FadeInItem direction="left" distance={offset.lateral}>
-            <Button variant="link" asChild className="mt-10 h-auto px-0 text-[1.02rem]">
+            <Button variant="link" asChild className="mt-10 h-auto px-0">
               <Link href={localePath(locale, "/about")}>
                 {linkLabel}
                 <span aria-hidden="true">→</span>
@@ -75,25 +71,25 @@ export function IntroSplit({
           </FadeInItem>
         </Stagger>
 
-        <FadeIn direction="scale" durationSec={duration.slow} className="order-1 lg:order-2">
-          <div className="relative mx-auto w-full max-w-[520px] overflow-hidden rounded-[8px] bg-white shadow-[var(--shadow-lg)] lg:mx-0 lg:max-w-none">
+        <FadeIn
+          direction="scale"
+          durationSec={duration.slow}
+          className="order-1 lg:order-2"
+        >
+          <div className="relative mx-auto w-full max-w-[520px] overflow-hidden rounded-[4px] bg-white lg:mx-0 lg:max-w-none">
             <div className="group relative aspect-[4/5] overflow-hidden md:aspect-[5/6]">
               <Image
                 src={media.patrick}
                 alt={imageAlt}
                 fill
-                className="object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
+                className="object-cover object-top"
                 sizes="(max-width:1024px) 100vw, 42vw"
               />
             </div>
-            <div className="bg-navy px-6 py-5 text-white md:px-7 md:py-6">
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/55">
-                {founderTitle}
-              </p>
-              <p className="mt-1.5 font-display text-[1.65rem] leading-none tracking-[-0.03em] md:text-[1.85rem]">
-                {founderName}
-              </p>
-              <p className="mt-2 text-sm text-white/65">{siteName}</p>
+            <div className="bg-black px-[30px] py-5 text-white">
+              <p className="type-label text-white/55">{founderTitle}</p>
+              <p className="type-h3 mt-1.5">{founderName}</p>
+              <p className="type-small mt-2 text-white/65">{siteName}</p>
             </div>
           </div>
         </FadeIn>

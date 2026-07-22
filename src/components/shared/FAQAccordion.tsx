@@ -22,10 +22,7 @@ export function FAQAccordion({ eyebrow, title, items }: Props) {
       <div className="container grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
         <FadeIn direction="left" distance={offset.lateral}>
           <p className="eyebrow">{eyebrow}</p>
-          <h2
-            id="faq-title"
-            className="max-w-md text-[clamp(2.1rem,4vw,3.6rem)] text-ink"
-          >
+          <h2 id="faq-title" className="max-w-md text-ink">
             {title}
           </h2>
         </FadeIn>
@@ -34,20 +31,20 @@ export function FAQAccordion({ eyebrow, title, items }: Props) {
             type="single"
             collapsible
             defaultValue="item-0"
-            className="border-y border-border"
+            className="border-y border-[var(--borders)]"
           >
             {items.map((item, index) => (
               <AccordionItem
                 key={item.question}
                 value={`item-${index}`}
-                className="border-border"
+                className="border-[var(--borders)]"
               >
                 <AccordionTrigger className="py-7 hover:no-underline md:py-8">
-                  <span className="font-display pr-4 text-left text-xl text-ink md:text-2xl">
+                  <span className="type-faq pr-4 text-left text-ink">
                     {item.question}
                   </span>
                 </AccordionTrigger>
-                <AccordionContent className="pb-8 text-[1.02rem] leading-relaxed text-muted-foreground">
+                <AccordionContent className="type-body pb-8 text-muted-foreground">
                   <p className="max-w-2xl">{item.answer}</p>
                 </AccordionContent>
               </AccordionItem>

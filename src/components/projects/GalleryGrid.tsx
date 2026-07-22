@@ -127,15 +127,12 @@ export function GalleryGrid({
           <FadeIn direction="left" distance={offset.lateral}>
             <div>
               {eyebrow && (
-                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[#111]">
+                <p className="type-label text-[#111]">
                   {eyebrow}
                 </p>
               )}
               {title && (
-                <h2
-                  id={headingId}
-                  className="mt-4 max-w-[16ch] font-display text-[clamp(2rem,4vw,3.35rem)] font-medium leading-[1.08] tracking-[-0.035em] text-[#111]"
-                >
+                <h2 id={headingId} className="mt-4 max-w-[16ch] text-[#111]">
                   {title}
                 </h2>
               )}
@@ -143,7 +140,7 @@ export function GalleryGrid({
           </FadeIn>
           {body && (
             <FadeIn direction="right" distance={offset.lateral}>
-              <p className="max-w-sm text-[0.98rem] leading-[1.7] text-[#6b7280] md:justify-self-end md:text-right">
+              <p className="type-body max-w-sm text-[#6b7280] md:justify-self-end md:text-right">
                 {body}
               </p>
             </FadeIn>
@@ -176,8 +173,8 @@ export function GalleryGrid({
                   onClick={() => openAt(i)}
                   aria-label={`${galleryItem.title} — ${galleryItem.category}`}
                   className={cn(
-                    "group absolute inset-0 h-auto min-h-0 w-full overflow-hidden rounded-[8px] bg-[#0b1520] p-0 text-left shadow-none",
-                    "cursor-zoom-in hover:bg-[#0b1520] focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#111]",
+                    "group absolute inset-0 h-auto min-h-0 w-full overflow-hidden rounded-[4px] bg-black p-0 text-left shadow-none",
+                    "cursor-zoom-in hover:bg-black focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#111]",
                     "active:translate-y-0"
                   )}
                 >
@@ -193,7 +190,7 @@ export function GalleryGrid({
                     }
                   />
                   <span
-                    className="pointer-events-none absolute inset-0 bg-transparent transition-colors duration-400 group-hover:bg-[#070d14]/10 group-focus-visible:bg-[#070d14]/10"
+                    className="pointer-events-none absolute inset-0 bg-transparent transition-colors duration-400 group-hover:bg-black/10 group-focus-visible:bg-black/10"
                     aria-hidden="true"
                   />
                 </Button>
@@ -207,7 +204,7 @@ export function GalleryGrid({
         <div
           ref={dialogRef}
           className={cn(
-            "fixed inset-0 z-[80] flex items-center justify-center bg-[#070d14]/92 p-3 backdrop-blur-md md:p-8",
+            "fixed inset-0 z-[80] flex items-center justify-center bg-black/92 p-3 backdrop-blur-md md:p-8",
             !visible && "opacity-0"
           )}
           role="dialog"
@@ -219,7 +216,7 @@ export function GalleryGrid({
             ref={closeRef}
             type="button"
             variant="ghost"
-            className="absolute right-3 top-3 z-20 h-auto rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-none hover:bg-white/20 hover:text-white sm:right-4 sm:top-4 md:right-8 md:top-8"
+            className="absolute right-3 top-3 z-20 h-auto rounded-full border border-white/20 bg-white/10 px-4 py-2 type-small text-white shadow-none hover:bg-white/20 hover:text-white sm:right-4 sm:top-4 md:right-8 md:top-8"
             onClick={close}
           >
             {closeLabel}
@@ -256,7 +253,7 @@ export function GalleryGrid({
             className="relative w-full max-w-5xl overflow-hidden bg-transparent"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative aspect-[16/11] w-full overflow-hidden rounded-none bg-[#0b1520] shadow-[var(--shadow-lg)]">
+            <div className="relative aspect-[16/11] w-full overflow-hidden rounded-none bg-black">
               <Image
                 key={activeItem.id}
                 src={activeItem.image}
@@ -269,13 +266,10 @@ export function GalleryGrid({
             </div>
             <div className="mt-4 flex flex-col gap-3 px-1 text-white sm:mt-5 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
               <div className="min-w-0">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/75">
+                <p className="type-label text-white/75">
                   {activeItem.category}
                 </p>
-                <h3
-                  id={titleId}
-                  className="mt-2 font-display text-[clamp(1.2rem,2.5vw,1.85rem)] leading-tight tracking-[-0.03em]"
-                >
+                <h3 id={titleId} className="mt-2">
                   {activeItem.title}
                 </h3>
                 <p className="sr-only" aria-live="polite">
@@ -311,13 +305,13 @@ export function GalleryGrid({
                 >
                   <span aria-hidden="true">→</span>
                 </Button>
-                <p className="text-sm text-white/80">
+                <p className="type-small text-white/80">
                   {active !== null
                     ? `${String(active + 1).padStart(2, "0")} / ${String(list.length).padStart(2, "0")}`
                     : null}
                 </p>
               </div>
-              <p className="hidden shrink-0 pb-1 text-sm text-white/80 sm:block">
+              <p className="type-small hidden shrink-0 pb-1 text-white/80 sm:block">
                 {active !== null
                   ? `${String(active + 1).padStart(2, "0")} / ${String(list.length).padStart(2, "0")}`
                   : null}
